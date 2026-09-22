@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bersih Solutions | Baucar Jelajah Kerjaya</title>
+  <title>Bersih Solutions | Career Fair Voucher</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,19 +30,19 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
 
-  <!-- HEADER UTAMA -->
+  <!-- MAIN HEADER -->
   <header class="bg-white border-b border-slate-200 py-6 px-4 shadow-sm">
     <div class="max-w-4xl mx-auto flex flex-col items-center justify-center space-y-4">
       <div class="h-16 sm:h-20 flex items-center justify-center">
-        <img id="mainAppLogo" src="" alt="Logo Bersih Solutions" class="h-full max-w-xs object-contain">
+        <img id="mainAppLogo" src="" alt="Bersih Solutions Logo" class="h-full max-w-xs object-contain">
       </div>
 
       <div class="flex items-center space-x-3 pt-2">
         <button id="navCustomer" onclick="switchTab('customer')" class="px-5 py-2 rounded-lg text-sm font-bold transition btn-brand shadow-sm">
-          Tuntut Baucar
+          Claim Voucher
         </button>
         <button id="navAdmin" onclick="switchTab('admin')" class="px-5 py-2 rounded-lg text-sm font-bold transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">
-          Akses Admin
+          Admin Access
         </button>
       </div>
     </div>
@@ -50,63 +50,63 @@
 
   <main class="max-w-3xl mx-auto w-full px-4 py-8 flex-grow">
 
-    <!-- SEKSYEN TUNTUTAN BAUCAR (PELANGGAN) -->
+    <!-- CUSTOMER SECTION -->
     <section id="customerSection" class="space-y-6">
       <div class="text-center">
-        <h1 id="mainHeaderTitle" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Baucar Jelajah Kerjaya</h1>
-        <p id="mainHeaderSub" class="text-slate-500 mt-2 text-sm">Sila isi maklumat anda di bawah untuk menerima baucar digital</p>
+        <h1 id="mainHeaderTitle" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Career Fair Voucher</h1>
+        <p id="mainHeaderSub" class="text-slate-500 mt-2 text-sm">Please fill in your details below to receive your digital voucher</p>
       </div>
 
-      <!-- Borang Tuntutan -->
+      <!-- Claim Form -->
       <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
         <form id="claimForm" onsubmit="handleClaim(event)" class="space-y-4">
           
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh</label>
-              <input type="text" id="custName" required placeholder="Nama Penuh Anda" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+              <input type="text" id="custName" required placeholder="Your Full Name" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Emel</label>
-              <input type="email" id="custEmail" required placeholder="nama@email.com" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+              <input type="email" id="custEmail" required placeholder="name@email.com" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Nombor Telefon</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
               <input type="tel" id="custPhone" required placeholder="0123456789" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Nombor Kad Pengenalan / Pasport</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">IC / Passport Number</label>
               <input type="text" id="custIC" required maxlength="9" placeholder="01-234567" oninput="formatICInput(this)" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 outline-none text-sm font-mono">
-              <span class="text-[11px] text-slate-400 mt-1 block">Format 8 Digit: <strong class="text-slate-600">00-000000</strong> (Cth: 01-234567)</span>
+              <span class="text-[11px] text-slate-400 mt-1 block">8-Digit Format: <strong class="text-slate-600">00-000000</strong> (E.g.: 01-234567)</span>
             </div>
           </div>
 
           <div class="pt-2">
             <button type="submit" id="drawBtn" class="w-full py-3.5 btn-brand font-bold rounded-xl shadow-md transition text-base flex items-center justify-center space-x-2">
               <i class="fa-solid fa-ticket text-sm"></i>
-              <span>Dapatkan Baucar</span>
+              <span>Claim Voucher</span>
             </button>
           </div>
         </form>
       </div>
 
-      <!-- Paparan Kad Baucar Terhasil -->
+      <!-- Generated Voucher Card Display -->
       <div id="voucherDisplay" class="hidden max-w-md mx-auto space-y-4 pt-4">
         <div id="voucherCard" class="relative bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 p-6 text-center">
           <div class="space-y-4">
             <div class="h-10 flex items-center justify-center">
-              <img id="vCardLogo" src="" alt="Logo Bersih Solutions" class="h-full object-contain">
+              <img id="vCardLogo" src="" alt="Bersih Solutions Logo" class="h-full object-contain">
             </div>
             
             <span id="vCardBanner" class="inline-block px-3 py-1 bg-blue-50 text-brand text-xs font-bold rounded-full uppercase tracking-wider border border-blue-100">
-              E-Baucar Digital
+              Digital E-Voucher
             </span>
             
             <div class="h-36 w-full rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center border border-slate-200">
-              <img id="vCardImage" src="" alt="Tahap Baucar" class="w-full h-full object-cover">
+              <img id="vCardImage" src="" alt="Voucher Tier Image" class="w-full h-full object-cover">
             </div>
 
             <div>
@@ -115,115 +115,115 @@
             </div>
 
             <div class="bg-slate-900 text-white p-4 rounded-xl space-y-1">
-              <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Kod Baucar Unik Anda</p>
+              <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Your Unique Voucher Code</p>
               <p id="vCardCode" class="text-2xl font-mono font-bold tracking-wider text-yellow-400"></p>
             </div>
 
             <div class="text-xs text-slate-500 space-y-1 border-t border-slate-100 pt-3 text-left">
-              <p><span class="font-semibold text-slate-700">Nama:</span> <span id="vCardHolder"></span></p>
-              <p><span class="font-semibold text-slate-700">No. Kad Pengenalan:</span> <span id="vCardIC"></span></p>
-              <p><span class="font-semibold text-slate-700">Tarikh Dikeluarkan:</span> <span id="vCardDate"></span></p>
+              <p><span class="font-semibold text-slate-700">Name:</span> <span id="vCardHolder"></span></p>
+              <p><span class="font-semibold text-slate-700">IC/Passport No:</span> <span id="vCardIC"></span></p>
+              <p><span class="font-semibold text-slate-700">Issued Date:</span> <span id="vCardDate"></span></p>
             </div>
           </div>
         </div>
 
         <button onclick="downloadVoucher()" class="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow transition flex items-center justify-center space-x-2 text-sm">
           <i class="fa-solid fa-download"></i>
-          <span>Muat Turun Kad Baucar</span>
+          <span>Download Voucher Image</span>
         </button>
       </div>
     </section>
 
-    <!-- SEKSYEN ADMIN -->
+    <!-- ADMIN SECTION -->
     <section id="adminSection" class="hidden space-y-6">
       
       <div id="adminAuth" class="max-w-sm mx-auto bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
         <div class="w-12 h-12 bg-blue-50 text-brand rounded-full flex items-center justify-center mx-auto text-xl">
           <i class="fa-solid fa-lock"></i>
         </div>
-        <h2 class="text-xl font-bold">Log Masuk Admin</h2>
-        <input type="password" id="adminPin" placeholder="Masukkan PIN" class="w-full px-4 py-2 border rounded-xl text-center text-lg font-bold tracking-widest outline-none focus:ring-2 focus:ring-blue-600">
-        <button onclick="checkAdminAuth()" class="w-full py-2.5 btn-brand font-bold rounded-xl transition">Buka Papan Pemuka</button>
+        <h2 class="text-xl font-bold">Admin Login</h2>
+        <input type="password" id="adminPin" placeholder="Enter PIN" class="w-full px-4 py-2 border rounded-xl text-center text-lg font-bold tracking-widest outline-none focus:ring-2 focus:ring-blue-600">
+        <button onclick="checkAdminAuth()" class="w-full py-2.5 btn-brand font-bold rounded-xl transition">Open Dashboard</button>
       </div>
 
       <div id="adminContent" class="hidden space-y-6">
         
         <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
           <button onclick="switchAdminTab('validator')" id="tabValBtn" class="px-4 py-2 rounded-xl text-xs font-bold btn-brand">
-            <i class="fa-solid fa-qrcode mr-1"></i> Pengesah Kod
+            <i class="fa-solid fa-qrcode mr-1"></i> Code Validator
           </button>
           <button onclick="switchAdminTab('headerSettings')" id="tabHdrBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200">
-            <i class="fa-solid fa-pen-to-square mr-1"></i> Tetapan Kod & Tajuk
+            <i class="fa-solid fa-pen-to-square mr-1"></i> Prefix & Title
           </button>
           <button onclick="switchAdminTab('inventory')" id="tabInvBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200">
-            <i class="fa-solid fa-layer-group mr-1"></i> Stok & Imej Baucar
+            <i class="fa-solid fa-layer-group mr-1"></i> Stock & Images
           </button>
           <button onclick="switchAdminTab('settings')" id="tabSetBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200">
-            <i class="fa-solid fa-image mr-1"></i> Tetapan Logo
+            <i class="fa-solid fa-image mr-1"></i> Logo Settings
           </button>
           <button onclick="switchAdminTab('storage')" id="tabStrBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200">
-            <i class="fa-solid fa-folder-open mr-1"></i> Storan Google Drive
+            <i class="fa-solid fa-folder-open mr-1"></i> Google Drive
           </button>
           <button onclick="switchAdminTab('history')" id="tabHistBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200">
-            <i class="fa-solid fa-list mr-1"></i> Rekod Tuntutan
+            <i class="fa-solid fa-list mr-1"></i> Claim Records
           </button>
           <button onclick="switchAdminTab('google')" id="tabGglBtn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200">
             <i class="fa-brands fa-google mr-1"></i> Google Sheet
           </button>
         </div>
 
-        <!-- TAB 1: PENGESAH KOD -->
+        <!-- TAB 1: CODE VALIDATOR -->
         <div id="adminValidatorTab" class="space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-lg mx-auto space-y-4">
-            <h3 class="text-base font-bold text-slate-800">Semak & Tebuk Kod Baucar</h3>
+            <h3 class="text-base font-bold text-slate-800">Verify & Redeem Voucher Code</h3>
             <div class="flex space-x-2">
-              <input type="text" id="searchCodeInput" placeholder="Contoh: EV-84920" class="flex-grow px-4 py-2.5 rounded-xl border border-slate-300 font-mono uppercase text-lg focus:ring-2 focus:ring-blue-600 outline-none">
-              <button onclick="verifyCode()" class="px-5 py-2.5 btn-brand font-bold rounded-xl transition text-sm">Semak</button>
+              <input type="text" id="searchCodeInput" placeholder="E.g.: EV-84920" class="flex-grow px-4 py-2.5 rounded-xl border border-slate-300 font-mono uppercase text-lg focus:ring-2 focus:ring-blue-600 outline-none">
+              <button onclick="verifyCode()" class="px-5 py-2.5 btn-brand font-bold rounded-xl transition text-sm">Verify</button>
             </div>
             <div id="validationResult" class="hidden p-4 rounded-xl border space-y-3"></div>
           </div>
         </div>
 
-        <!-- TAB: TETAPAN KOD & TAJUK -->
+        <!-- TAB: PREFIX & HEADER SETTINGS -->
         <div id="adminHeaderSettingsTab" class="hidden space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto space-y-6">
             <div>
-              <h3 class="text-base font-bold text-slate-800">Tetapan Kod Rujukan Awalan & Tajuk Utama</h3>
-              <p class="text-xs text-slate-500 mt-1">Ubah suai awalan kod baucar dan paparan teks utama di halaman depan.</p>
+              <h3 class="text-base font-bold text-slate-800">Voucher Prefix & Main Title Settings</h3>
+              <p class="text-xs text-slate-500 mt-1">Customize the voucher code prefix and main landing page text.</p>
             </div>
 
             <div class="space-y-4 border-t border-slate-100 pt-4">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Kod Rujukan Awalan (Prefix)</label>
-                <input type="text" id="codePrefixInput" placeholder="Contoh: EV-" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-mono uppercase focus:ring-2 focus:ring-blue-600 outline-none">
-                <span class="text-[11px] text-slate-400 mt-1 block">Sistem akan menjana nombor 5-digit secara rawak selepas awalan ini (Cth: <strong id="prefixExampleText">EV-84920</strong>).</span>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Code Prefix</label>
+                <input type="text" id="codePrefixInput" placeholder="E.g.: EV-" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-mono uppercase focus:ring-2 focus:ring-blue-600 outline-none">
+                <span class="text-[11px] text-slate-400 mt-1 block">A random 5-digit number will be appended (E.g.: <strong id="prefixExampleText">EV-84920</strong>).</span>
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Tajuk Utama Halaman Tuntutan</label>
-                <input type="text" id="headerTitleInput" placeholder="Contoh: Baucar Jelajah Kerjaya" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Main Landing Header Title</label>
+                <input type="text" id="headerTitleInput" placeholder="E.g.: Career Fair Voucher" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Pengenalan / Sub-Tajuk Halaman</label>
-                <textarea id="headerSubInput" rows="2" placeholder="Sila isi maklumat anda di bawah untuk menerima baucar digital" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-600 outline-none"></textarea>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Main Landing Subtitle</label>
+                <textarea id="headerSubInput" rows="2" placeholder="Please fill in your details below to receive your digital voucher" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-600 outline-none"></textarea>
               </div>
 
               <button onclick="saveHeaderAndPrefixSettings()" class="w-full py-2.5 btn-brand font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
-                <span>Simpan Tetapan Kod & Tajuk</span>
+                <span>Save Prefix & Header Settings</span>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- TAB 2: STOK & IMEJ BAUCAR -->
+        <!-- TAB 2: INVENTORY & TIER IMAGES -->
         <div id="adminInventoryTab" class="hidden space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
               <div>
-                <h3 class="text-base font-bold text-slate-800">Kemas Kini Tetapan, Stok & Imej Baucar</h3>
-                <p class="text-xs text-slate-500">Muat naik imej tersuai bagi setiap jenis Tahap Baucar di bawah.</p>
+                <h3 class="text-base font-bold text-slate-800">Update Stock & Tier Voucher Images</h3>
+                <p class="text-xs text-slate-500">Upload custom tier graphics or update voucher stock amounts.</p>
               </div>
             </div>
             
@@ -232,111 +232,103 @@
             <div class="flex justify-end pt-2">
               <button onclick="saveTierSettings()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition text-xs flex items-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
-                <span>Simpan Tetapan Stok & Imej</span>
+                <span>Save Stock & Image Settings</span>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- TAB 3: TETAPAN LOGO UTAMA -->
+        <!-- TAB 3: LOGO SETTINGS -->
         <div id="adminSettingsTab" class="hidden space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto space-y-6">
             <div>
-              <h3 class="text-base font-bold text-slate-800">Pengurusan Logo Utama</h3>
-              <p class="text-xs text-slate-500 mt-1">Tukar logo Bersih Solutions yang dipaparkan pada pengepala sistem dan kad baucar.</p>
+              <h3 class="text-base font-bold text-slate-800">Main Logo Management</h3>
+              <p class="text-xs text-slate-500 mt-1">Change the logo displayed on the website header and on generated voucher cards.</p>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center space-y-2">
-              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Pratonton Logo Semasa</span>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Current Logo Preview</span>
               <div class="h-20 flex items-center justify-center">
-                <img id="adminLogoPreview" src="" alt="Pratonton Logo" class="h-full max-w-xs object-contain">
+                <img id="adminLogoPreview" src="" alt="Logo Preview" class="h-full max-w-xs object-contain">
               </div>
             </div>
 
             <div class="space-y-4">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Muat Naik Fail Logo Baru (PNG, JPG, SVG)</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Upload New Logo File (PNG, JPG, SVG)</label>
                 <input type="file" id="logoFileInput" accept="image/*" onchange="handleLogoFileUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-brand hover:file:bg-blue-100 cursor-pointer border border-slate-200 rounded-xl p-1">
               </div>
 
               <div class="relative flex py-1 items-center">
                 <div class="flex-grow border-t border-slate-200"></div>
-                <span class="flex-shrink mx-4 text-xs text-slate-400 font-bold">ATAU PAUTAN URL</span>
+                <span class="flex-shrink mx-4 text-xs text-slate-400 font-bold">OR VIA URL</span>
                 <div class="flex-grow border-t border-slate-200"></div>
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Pautan URL Logo</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Logo URL</label>
                 <input type="url" id="logoUrlInput" placeholder="https://example.com/logo.png" class="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-blue-600">
               </div>
 
               <div class="flex space-x-2 pt-2">
                 <button onclick="saveLogoSettings()" class="flex-grow py-2.5 btn-brand font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
                   <i class="fa-solid fa-save"></i>
-                  <span>Simpan & Kemaskini Logo</span>
+                  <span>Save & Update Logo</span>
                 </button>
                 <button onclick="resetDefaultLogo()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs border border-slate-200">
-                  Set Semula Asal
+                  Reset Default
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 4: STORAN GOOGLE DRIVE -->
+        <!-- TAB 4: GOOGLE DRIVE STORAGE -->
         <div id="adminStorageTab" class="hidden space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto space-y-6">
             <div>
-              <h3 class="text-base font-bold text-slate-800">Tetapan Storan Fail (Google Drive)</h3>
-              <p class="text-xs text-slate-500 mt-1">Sambungkan Web App ini dengan folder Google Drive untuk menyimpan data dan fail imej kad baucar.</p>
+              <h3 class="text-base font-bold text-slate-800">Google Drive Storage Settings</h3>
+              <p class="text-xs text-slate-500 mt-1">Connect a Google Drive Folder ID to auto-save generated voucher PNG images.</p>
             </div>
 
             <div class="space-y-3">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">ID Folder Google Drive</label>
-                <input type="text" id="driveFolderId" placeholder="Contoh: 1a2b3c4d5e6f7g8h9i0j" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-mono outline-none focus:ring-2 focus:ring-blue-600">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Google Drive Folder ID</label>
+                <input type="text" id="driveFolderId" placeholder="E.g.: 1a2b3c4d5e6f7g8h9i0j" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-mono outline-none focus:ring-2 focus:ring-blue-600">
               </div>
 
               <button onclick="saveDriveConfig()" class="w-full py-2.5 btn-brand font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
-                <span>Simpan ID Folder Drive</span>
+                <span>Save Drive Folder ID</span>
               </button>
-            </div>
-
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-600">
-              <h4 class="font-bold text-slate-800 flex items-center">
-                <i class="fa-solid fa-circle-info text-blue-600 mr-2"></i> Cara Menetapkan Storan Google Drive:
-              </h4>
-              <ol class="list-decimal list-inside space-y-1 pl-1">
-                <li>Buka Google Drive (<code class="bg-slate-200 px-1 rounded">drive.google.com</code>).</li>
-                <li>Bina Folder Baru (contoh: <strong>"Data Baucar Digital"</strong>).</li>
-                <li>Buka folder tersebut dan salin ID di hujung URL bar alamat:
-                  <span class="text-[11px] text-slate-500 font-mono block bg-slate-200 p-1.5 rounded my-1 overflow-x-auto">drive.google.com/drive/folders/<strong>1A2b3C4d5E6f7G8h9I0jKLMN</strong></span>
-                </li>
-                <li>Tampal ID tersebut di atas dan klik **Simpan ID Folder Drive**.</li>
-              </ol>
             </div>
           </div>
         </div>
 
-        <!-- TAB 5: REKOD TUNTUTAN -->
+        <!-- TAB 5: CLAIM RECORDS -->
         <div id="adminHistoryTab" class="hidden space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
             <div class="flex justify-between items-center">
-              <h3 class="text-base font-bold text-slate-800">Senarai Tuntutan Baucar</h3>
-              <button onclick="exportLogsCSV()" class="px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg">Eksport CSV</button>
+              <h3 class="text-base font-bold text-slate-800">Voucher Claim Records</h3>
+              <div class="flex space-x-2">
+                <button onclick="renderLogsTable()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-200 flex items-center space-x-1">
+                  <i class="fa-solid fa-rotate-right"></i>
+                  <span>Sync Google Sheet</span>
+                </button>
+                <button onclick="exportLogsCSV()" class="px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded-lg">Export CSV</button>
+              </div>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs text-slate-600">
                 <thead class="bg-slate-50 text-slate-700 uppercase font-bold border-b">
                   <tr>
-                    <th class="p-2.5">Kod</th>
-                    <th class="p-2.5">Nama</th>
-                    <th class="p-2.5">Emel / No. Tel</th>
-                    <th class="p-2.5">No. Kad Pengenalan</th>
-                    <th class="p-2.5">Baucar</th>
+                    <th class="p-2.5">Code</th>
+                    <th class="p-2.5">Name</th>
+                    <th class="p-2.5">Email / Phone</th>
+                    <th class="p-2.5">IC Number</th>
+                    <th class="p-2.5">Voucher</th>
                     <th class="p-2.5">Status</th>
-                    <th class="p-2.5">Tindakan</th>
+                    <th class="p-2.5">Action</th>
                   </tr>
                 </thead>
                 <tbody id="logsTableBody" class="divide-y divide-slate-100"></tbody>
@@ -345,70 +337,30 @@
           </div>
         </div>
 
-        <!-- TAB 6: GOOGLE SHEET & SCRIPT -->
+        <!-- TAB 6: GOOGLE SHEET SETTINGS -->
         <div id="adminGoogleTab" class="hidden space-y-4">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto space-y-6">
             <div>
-              <h3 class="text-base font-bold text-slate-800">Pautan Webhook Google Apps Script</h3>
-              <p class="text-xs text-slate-500 mt-1">Sambungkan sistem ke Google Sheet untuk merekodkan tuntutan pelanggan & menyimpan imej kad baucar ke Drive.</p>
+              <h3 class="text-base font-bold text-slate-800">Google Apps Script Webhook Endpoint</h3>
+              <p class="text-xs text-slate-500 mt-1">Connect your Google Sheet backend to record all live claims from any device.</p>
             </div>
 
             <div class="space-y-3">
               <div>
-                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">URL Endpoint Web App Google</label>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Google Web App URL Endpoint</label>
                 <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-blue-600">
               </div>
 
               <div class="flex space-x-2">
                 <button onclick="saveGoogleConfig()" class="flex-grow py-2.5 btn-brand font-bold rounded-xl text-xs flex items-center justify-center space-x-2">
                   <i class="fa-solid fa-floppy-disk"></i>
-                  <span>Simpan Endpoint</span>
+                  <span>Save Endpoint</span>
                 </button>
                 <button onclick="testWebhook()" class="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-200 border border-slate-200">
-                  Uji Sambungan
+                  Test Connection
                 </button>
               </div>
             </div>
-
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 text-xs text-slate-600">
-              <h4 class="font-bold text-slate-800 flex items-center text-sm">
-                <i class="fa-solid fa-code text-blue-600 mr-2"></i> Skrip Google Apps Script (Dengan Menyimpan Imej Kad):
-              </h4>
-
-              <div class="p-2 bg-slate-900 text-slate-200 rounded-lg text-[11px] font-mono overflow-x-auto select-all">
-<pre>function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
-    var fileUrl = "Tiada Fail";
-    
-    if (data.folderId && data.cardBase64) {
-      try {
-        var folder = DriveApp.getFolderById(data.folderId);
-        var base64Data = data.cardBase64.replace(/^data:image\/(png|jpeg);base64,/, "");
-        var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), 'image/png', 'Baucar_' + data.code + '_' + data.name + '.png');
-        var file = folder.createFile(blob);
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        fileUrl = file.getUrl();
-      } catch (driveErr) {
-        fileUrl = "Ralat Drive: " + driveErr.toString();
-      }
-    }
-
-    sheet.appendRow([
-      data.code, data.name, data.email, data.phone, 
-      data.ic, data.tierName, data.value, data.date, 
-      data.status, fileUrl
-    ]);
-    
-    return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
-  } catch (err) {
-    return ContentService.createTextOutput("Error: " + err.toString()).setMimeType(ContentService.MimeType.TEXT);
-  }
-}</pre>
-              </div>
-            </div>
-
           </div>
         </div>
 
@@ -418,16 +370,16 @@
   </main>
 
   <footer class="bg-white text-slate-400 text-center py-4 text-xs border-t border-slate-200">
-    <p>&copy; 2026 Bersih Solutions. Hak Cipta Terpelihara.</p>
+    <p>&copy; 2026 Bersih Solutions. All Rights Reserved.</p>
   </footer>
 
   <script>
     const DEFAULT_LOGO_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 300' width='100%' height='100%'><g fill='%23273e82'><path d='M70,72h78c33,0,52,16,52,41c0,17-10,30-26,36c20,5,32,20,32,41c0,27-21,44-56,44H70V72z M108,103v33h36c13,0,21-7,21-17s-8-16-21-16H108z M108,165v38h41c14,0,22-7,22-19s-8-19-22-19H108z'/><path d='M215,152c0-48,34-82,80-82c47,0,78,33,78,80c0,5-1,11-2,15h-118c3,23,20,37,43,37c16,0,29-6,37-16h38c-11,29-41,48-77,48C248,234,215,200,215,152z M334,136c-1-20-16-33-39-33c-21,0-36,13-40,33H334z'/><path d='M391,72h36v24c8-16,25-26,45-26c6,0,12,1,16,3v37c-6-2-12-3-19-3c-25,0-42,16-42,42v85h-36V72z'/><path d='M486,183c11,12,28,19,45,19c15,0,24-6,24-15c0-8-7-12-27-16c-31-7-57-16-57-46c0-32,27-55,64-55c26,0,48,9,63,24l-20,24c-11-10-26-15-42-15c-14,0-23,6-23,14c0,8,8,12,27,16c33,7,58,16,58,46c0,33-26,56-66,56c-28,0-53-10-70-27L486,183z'/><path d='M624,72h36v162h-36V72z M642,20c13,0,23,10,23,23c0,13-10,23-23,23s-23-10-23-23C619,30,629,20,642,20z'/><path d='M218,245h10v20h-10z M240,245h12c7,0,12,4,12,10s-5,10-12,10h-12V245z M250,250v10h2c3,0,5-2,5-5s-2-5-5-5H250z M270,245c7,0,12,5,12,10s-5,10-12,10s-12-5-12-10S263,245,270,245z M270,250c-3,0-5,2-5,5s2,5,5,5s5-2,5-5S273,250,270,250z M290,245h10v15h12v5h-22V245z M320,245h10v15c0,4-3,6-7,6s-7-2-7-6V245z M345,245h20v5h-7v15h-6v-15h-7V245z M375,245h10v20h-10z M395,245c7,0,12,5,12,10s-5,10-12,10s-12-5-12-10S388,245,395,245z M395,250c-3,0-5,2-5,5s2,5,5,5s5-2,5-5S398,250,395,250z M415,245h9l10,13v-13h9v20h-9l-10-13v13h-9V245z M445,260c2,2,5,3,8,3c3,0,5-1,5-3s-2-3-6-4c-6-1-11-3-11-8c0-5,5-8,12-8c4,0,8,1,10,3l-3,4c-2-1-4-2-7-2c-3,0-5,1-5,3s2,2,6,3c6,1,11,3,11,8c0,6-5,9-12,9c-5,0-9-1-12-4L445,260z'/></g></svg>";
 
     const DEFAULT_TIERS = [
-      { id: 1, name: "Baucar Gangsa", value: "DISKAUN RM 10", stock: 20, maxStock: 20, img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=500&auto=format&fit=crop&q=60" },
-      { id: 2, name: "Baucar Perak", value: "DISKAUN RM 25", stock: 10, maxStock: 10, img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&auto=format&fit=crop&q=60" },
-      { id: 3, name: "Baucar Emas", value: "DISKAUN RM 50", stock: 5, maxStock: 5, img: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&auto=format&fit=crop&q=60" }
+      { id: 1, name: "Bronze Voucher", value: "DISCOUNT RM 10", stock: 20, maxStock: 20, img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=500&auto=format&fit=crop&q=60" },
+      { id: 2, name: "Silver Voucher", value: "DISCOUNT RM 25", stock: 10, maxStock: 10, img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&auto=format&fit=crop&q=60" },
+      { id: 3, name: "Gold Voucher", value: "DISCOUNT RM 50", stock: 5, maxStock: 5, img: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&auto=format&fit=crop&q=60" }
     ];
 
     let tiers = JSON.parse(localStorage.getItem('evoucher_tiers')) || DEFAULT_TIERS;
@@ -437,8 +389,8 @@
     let appLogo = localStorage.getItem('evoucher_app_logo') || DEFAULT_LOGO_SVG;
 
     let codePrefix = localStorage.getItem('evoucher_code_prefix') || 'EV-';
-    let headerTitle = localStorage.getItem('evoucher_header_title') || 'Baucar Jelajah Kerjaya';
-    let headerSub = localStorage.getItem('evoucher_header_sub') || 'Sila isi maklumat anda di bawah untuk menerima baucar digital';
+    let headerTitle = localStorage.getItem('evoucher_header_title') || 'Career Fair Voucher';
+    let headerSub = localStorage.getItem('evoucher_header_sub') || 'Please fill in your details below to receive your digital voucher';
 
     function updateLogos() {
       document.getElementById('mainAppLogo').src = appLogo;
@@ -460,7 +412,6 @@
     function formatICInput(input) {
       let val = input.value.replace(/\D/g, '');
       if (val.length > 8) val = val.substring(0, 8);
-      
       if (val.length > 2) {
         input.value = val.substring(0, 2) + '-' + val.substring(2);
       } else {
@@ -526,12 +477,12 @@
       const sInput = document.getElementById('headerSubInput').value.trim();
 
       if (!pInput) {
-        alert('Sila masukkan Kod Rujukan Awalan (Prefix).');
+        alert('Please enter a voucher code prefix.');
         return;
       }
 
       codePrefix = pInput;
-      headerTitle = tInput || 'Baucar Digital';
+      headerTitle = tInput || 'Digital Voucher';
       headerSub = sInput || '';
 
       localStorage.setItem('evoucher_code_prefix', codePrefix);
@@ -539,7 +490,7 @@
       localStorage.setItem('evoucher_header_sub', headerSub);
 
       updateHeaderUI();
-      alert('Tetapan Kod Awalan & Tajuk Utama berjaya disimpan!');
+      alert('Prefix and main title settings saved successfully!');
     }
 
     async function handleClaim(e) {
@@ -552,7 +503,7 @@
 
       const icPattern = /^\d{2}-\d{6}$/;
       if (!icPattern.test(ic)) {
-        alert("Sila pastikan Nombor Kad Pengenalan mengikut format 8 digit (00-000000) seperti: 01-234567");
+        alert("Please ensure IC/Passport follows the 8-digit format (00-000000) e.g., 01-234567");
         return;
       }
 
@@ -564,13 +515,13 @@
       );
 
       if (isDuplicate) {
-        alert("Ralat Tuntutan: Maklumat anda telah didaftarkan dan pernah menuntut baucar sebelum ini.");
+        alert("Claim Error: Your details have already been registered and claimed a voucher before.");
         return;
       }
 
       const availableTiers = tiers.filter(t => t.stock > 0);
       if (availableTiers.length === 0) {
-        alert("Maaf! Kesemua baucar telah habis dituntut.");
+        alert("Sorry! All vouchers have been completely claimed.");
         return;
       }
 
@@ -579,7 +530,7 @@
       localStorage.setItem('evoucher_tiers', JSON.stringify(tiers));
 
       const code = generateCode();
-      const dateStr = new Date().toLocaleDateString('ms-MY', { year: 'numeric', month: 'short', day: 'numeric' });
+      const dateStr = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
 
       document.getElementById('vCardTierName').innerText = selectedTier.name;
       document.getElementById('vCardValue').innerText = selectedTier.value;
@@ -591,14 +542,13 @@
 
       document.getElementById('voucherDisplay').classList.remove('hidden');
 
-      // Tangkap imej kad baucar menggunakan html2canvas
       const cardElement = document.getElementById('voucherCard');
       let cardBase64 = "";
       try {
         const canvas = await html2canvas(cardElement);
         cardBase64 = canvas.toDataURL("image/png");
       } catch (err) {
-        console.error("Gagal menjana imej kad:", err);
+        console.error("Failed to render card image:", err);
       }
 
       const claimRecord = {
@@ -611,7 +561,7 @@
         value: selectedTier.value,
         img: selectedTier.img,
         date: dateStr,
-        status: 'Sah',
+        status: 'Valid',
         redeemedAt: null,
         folderId: driveFolderId,
         cardBase64: cardBase64
@@ -626,7 +576,7 @@
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(claimRecord)
-        }).catch(err => console.log('Sync err:', err));
+        }).catch(err => console.log('Sync error:', err));
       }
 
       document.getElementById('claimForm').reset();
@@ -636,7 +586,7 @@
       const card = document.getElementById('voucherCard');
       html2canvas(card).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Baucar-${document.getElementById('vCardCode').innerText}.png`;
+        link.download = `Voucher-${document.getElementById('vCardCode').innerText}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
@@ -648,7 +598,7 @@
         document.getElementById('adminAuth').classList.add('hidden');
         document.getElementById('adminContent').classList.remove('hidden');
       } else {
-        alert('PIN Tidak Sah. Sila cuba lagi.');
+        alert('Invalid PIN. Please try again.');
       }
     }
 
@@ -661,24 +611,24 @@
 
       if (!record) {
         resContainer.className = "p-4 rounded-xl border bg-red-50 border-red-200 text-red-800 space-y-1 text-xs";
-        resContainer.innerHTML = `<p class="font-bold">Kod Tidak Sah!</p><p>Kod "${input}" tidak dijumpai dalam rekod.</p>`;
+        resContainer.innerHTML = `<p class="font-bold">Invalid Code!</p><p>Code "${input}" was not found in records.</p>`;
         return;
       }
 
-      if (record.status === 'Telah Ditebuk' || record.status === 'Redeemed') {
+      if (record.status === 'Redeemed' || record.status === 'Telah Ditebuk') {
         resContainer.className = "p-4 rounded-xl border bg-amber-50 border-amber-200 text-amber-900 space-y-1 text-xs";
-        resContainer.innerHTML = `<p class="font-bold">Telah Ditebuk!</p><p>Pemegang: ${record.name} (${record.phone})</p><p>Tarikh Tebuk: ${record.redeemedAt}</p>`;
+        resContainer.innerHTML = `<p class="font-bold">Already Redeemed!</p><p>Holder: ${record.name} (${record.phone})</p><p>Redeemed At: ${record.redeemedAt}</p>`;
         return;
       }
 
       resContainer.className = "p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900 space-y-2 text-xs";
       resContainer.innerHTML = `
-        <p class="font-bold text-sm">Baucar Sah!</p>
-        <p><strong>Baucar:</strong> ${record.value} (${record.tierName})</p>
-        <p><strong>Nama Pemegang:</strong> ${record.name} (${record.phone})</p>
-        <p><strong>No. Kad Pengenalan:</strong> ${record.ic}</p>
+        <p class="font-bold text-sm">Valid Voucher!</p>
+        <p><strong>Voucher:</strong> ${record.value} (${record.tierName})</p>
+        <p><strong>Holder Name:</strong> ${record.name} (${record.phone})</p>
+        <p><strong>IC/Passport:</strong> ${record.ic}</p>
         <button onclick="markRedeemed('${record.code}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition text-xs">
-          Tebuk Baucar Ini Sekarang
+          Redeem This Voucher Now
         </button>
       `;
     }
@@ -686,8 +636,8 @@
     function markRedeemed(code) {
       const record = claims.find(c => c.code === code);
       if (record) {
-        record.status = 'Telah Ditebuk';
-        record.redeemedAt = new Date().toLocaleString('ms-MY');
+        record.status = 'Redeemed';
+        record.redeemedAt = new Date().toLocaleString('en-GB');
         localStorage.setItem('evoucher_claims', JSON.stringify(claims));
         verifyCode();
       }
@@ -698,38 +648,38 @@
       container.innerHTML = tiers.map((t, idx) => `
         <div class="border rounded-2xl p-4 space-y-3 bg-slate-50 text-xs shadow-sm">
           <div class="flex justify-between items-center border-b pb-2">
-            <span class="font-bold text-brand uppercase tracking-wider">TAHAP ${idx + 1}</span>
+            <span class="font-bold text-brand uppercase tracking-wider">TIER ${idx + 1}</span>
             <span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded text-[10px]">ID: ${t.id}</span>
           </div>
 
           <div>
-            <label class="block font-semibold mb-1 text-slate-700">Nama Tahap</label>
+            <label class="block font-semibold mb-1 text-slate-700">Tier Name</label>
             <input type="text" value="${t.name}" id="tierName_${t.id}" class="w-full p-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-600">
           </div>
 
           <div>
-            <label class="block font-semibold mb-1 text-slate-700">Nilai Baucar</label>
+            <label class="block font-semibold mb-1 text-slate-700">Voucher Value</label>
             <input type="text" value="${t.value}" id="tierValue_${t.id}" class="w-full p-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-600">
           </div>
 
           <div>
-            <label class="block font-semibold mb-1 text-slate-700">Baki Stok</label>
+            <label class="block font-semibold mb-1 text-slate-700">Remaining Stock</label>
             <input type="number" value="${t.stock}" id="tierStock_${t.id}" class="w-full p-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-600">
           </div>
 
           <div class="pt-2 border-t border-slate-200 space-y-2">
-            <label class="block font-semibold text-slate-700">Imej Baucar Tahap</label>
+            <label class="block font-semibold text-slate-700">Tier Voucher Graphic</label>
             <div class="h-28 w-full rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative group">
               <img id="tierImgPrev_${t.id}" src="${t.img}" class="w-full h-full object-cover">
             </div>
             
             <div>
-              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Muat Naik Fail Imej Baru</label>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Upload New Image File</label>
               <input type="file" accept="image/*" onchange="handleTierImageUpload(event, ${t.id})" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-brand cursor-pointer border border-slate-200 rounded-lg p-0.5">
             </div>
 
             <div>
-              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Atau Masukkan URL Imej</label>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Or Input Image URL</label>
               <input type="url" value="${t.img.startsWith('data:') ? '' : t.img}" id="tierImgUrl_${t.id}" onchange="previewTierUrl(${t.id})" placeholder="https://example.com/voucher.jpg" class="w-full p-1.5 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-blue-600">
             </div>
           </div>
@@ -775,7 +725,7 @@
         }
       });
       localStorage.setItem('evoucher_tiers', JSON.stringify(tiers));
-      alert('Stok dan imej baucar berjaya disimpan!');
+      alert('Stock and voucher images saved successfully!');
     }
 
     let tempLogoBase64 = null;
@@ -801,39 +751,57 @@
       } else if (urlInput) {
         appLogo = urlInput;
       } else {
-        alert('Sila muat naik fail imej logo atau masukkan URL logo yang sah.');
+        alert('Please upload an image file or provide a valid logo URL.');
         return;
       }
 
       localStorage.setItem('evoucher_app_logo', appLogo);
       updateLogos();
       tempLogoBase64 = null;
-      alert('Logo aplikasi berjaya dikemaskini!');
+      alert('Application logo updated successfully!');
     }
 
     function resetDefaultLogo() {
-      if (confirm('Adakah anda pasti mahu set semula logo ke logo asal Bersih Solutions?')) {
+      if (confirm('Are you sure you want to reset the logo back to default?')) {
         appLogo = DEFAULT_LOGO_SVG;
         localStorage.removeItem('evoucher_app_logo');
         updateLogos();
         document.getElementById('logoFileInput').value = '';
         document.getElementById('logoUrlInput').value = '';
-        alert('Logo telah diset semula ke imej asal!');
+        alert('Logo has been reset to default!');
       }
     }
 
     function saveDriveConfig() {
       driveFolderId = document.getElementById('driveFolderId').value.trim();
       localStorage.setItem('evoucher_drive_folder_id', driveFolderId);
-      alert('ID Folder Google Drive berjaya disimpan!');
+      alert('Google Drive Folder ID saved successfully!');
     }
 
-    function renderLogsTable() {
+    // UPDATED FUNCTION: FETCH LIVE DATA FROM GOOGLE SHEET
+    async function renderLogsTable() {
       const tbody = document.getElementById('logsTableBody');
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">Fetching live data from Google Sheet...</td></tr>`;
+
+      if (googleUrl) {
+        try {
+          const response = await fetch(googleUrl);
+          const resData = await response.json();
+          
+          if (resData.status === 'success' && resData.data.length > 0) {
+            claims = resData.data;
+            localStorage.setItem('evoucher_claims', JSON.stringify(claims));
+          }
+        } catch (err) {
+          console.log('Failed to fetch data from Google Sheet:', err);
+        }
+      }
+
       if (claims.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">Tiada rekod tuntutan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">No claim records found.</td></tr>`;
         return;
       }
+
       tbody.innerHTML = claims.map(c => `
         <tr class="hover:bg-slate-50">
           <td class="p-2.5 font-mono font-bold text-blue-600">${c.code}</td>
@@ -841,15 +809,15 @@
           <td class="p-2.5">${c.email}<br><span class="text-slate-400">${c.phone}</span></td>
           <td class="p-2.5 font-mono">${c.ic}</td>
           <td class="p-2.5"><span class="font-bold">${c.tierName}</span> (${c.value})</td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${c.status === 'Telah Ditebuk' || c.status === 'Redeemed' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${c.status}</span></td>
-          <td class="p-2.5">${c.status === 'Sah' || c.status === 'Valid' ? `<button onclick="markRedeemed('${c.code}'); renderLogsTable();" class="text-blue-600 underline font-semibold">Tebuk</button>` : `<span class="text-slate-400">${c.redeemedAt || ''}</span>`}</td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${c.status === 'Redeemed' || c.status === 'Telah Ditebuk' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${c.status}</span></td>
+          <td class="p-2.5">${c.status === 'Valid' || c.status === 'Sah' ? `<button onclick="markRedeemed('${c.code}'); renderLogsTable();" class="text-blue-600 underline font-semibold">Redeem</button>` : `<span class="text-slate-400">${c.redeemedAt || ''}</span>`}</td>
         </tr>
       `).join('');
     }
 
     function exportLogsCSV() {
-      if (claims.length === 0) return alert('Tiada rekod untuk dieksport');
-      let csv = 'Kod,Nama,Emel,Telefon,IC,Tahap,Nilai,Tarikh,Status,MasaTebuk\n';
+      if (claims.length === 0) return alert('No records to export');
+      let csv = 'Code,Name,Email,Phone,IC,Tier,Value,Date,Status,RedeemedAt\n';
       claims.forEach(c => {
         csv += `"${c.code}","${c.name}","${c.email}","${c.phone}","${c.ic}","${c.tierName}","${c.value}","${c.date}","${c.status}","${c.redeemedAt || ''}"\n`;
       });
@@ -857,25 +825,25 @@
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.setAttribute('href', url);
-      a.setAttribute('download', `Rekod_Baucar_Jelajah_Kerjaya.csv`);
+      a.setAttribute('download', `Career_Fair_Voucher_Records.csv`);
       a.click();
     }
 
     function saveGoogleConfig() {
       googleUrl = document.getElementById('googleScriptUrl').value.trim();
       localStorage.setItem('evoucher_gscript_url', googleUrl);
-      alert('URL Endpoint Google Apps Script berjaya disimpan!');
+      alert('Google Apps Script Webhook URL saved successfully!');
     }
 
     function testWebhook() {
-      if (!googleUrl) return alert('Sila masukkan URL Endpoint terlebih dahulu.');
+      if (!googleUrl) return alert('Please enter an endpoint URL first.');
       fetch(googleUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ test: true, timestamp: new Date().toISOString() })
-      }).then(() => alert('Ujian Isyarat Dihantar! Sila semak Google Sheet anda.'))
-        .catch(err => alert('Gagal berhubung: ' + err));
+      }).then(() => alert('Test Signal Sent! Check your Google Sheet.'))
+        .catch(err => alert('Failed to connect: ' + err));
     }
   </script>
 </body>
