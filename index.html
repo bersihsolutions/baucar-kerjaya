@@ -3,1026 +3,803 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bersih Solutions Voucher portal</title>
-    
+    <title>Bersih Solutions Voucher Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons CDN -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts Inter & JetBrains Mono -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
-    
-    <!-- html2canvas for Downloadable Vouchers -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        bersih: {
-                            50: '#f0f4fd',
-                            100: '#e1e9fa',
-                            200: '#c7d7f7',
-                            500: '#3a61d0',
-                            600: '#1d3587', // Brand Primary Deep Blue
-                            700: '#172a6c',
-                            800: '#122053',
-                            900: '#0c1538',
-                        },
-                        gold: {
-                            400: '#e6ca65',
-                            500: '#d4af37', // Brand Accent Gold
-                            600: '#b59325',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
-
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f3f4f6;
         }
-
-        .voucher-card-shadow {
-            box-shadow: 0 20px 35px -10px rgba(29, 53, 135, 0.35), 0 10px 15px -5px rgba(212, 175, 55, 0.2);
-        }
-
-        .voucher-pattern {
-            background-color: #1d3587;
-            background-image: radial-gradient(rgba(212, 175, 55, 0.15) 1px, transparent 0);
-            background-size: 16px 16px;
-        }
-
         @media print {
-            body * { visibility: hidden; }
-            #printable-voucher, #printable-voucher * { visibility: visible; }
-            #printable-voucher {
+            body * {
+                visibility: hidden;
+            }
+            #printableVoucher, #printableVoucher * {
+                visibility: visible;
+            }
+            #printableVoucher {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
-                border: none !important;
+                margin: 0;
+                padding: 20px;
                 box-shadow: none !important;
+                border: 2px solid #000 !important;
             }
-            .no-print { display: none !important; }
+            .no-print {
+                display: none !important;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between text-slate-800 antialiased selection:bg-bersih-500 selection:text-white">
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
 
-    <div>
-        <!-- App Navigation Header -->
-        <header class="bg-bersih-600 text-white shadow-xl sticky top-0 z-50 border-b border-bersih-700">
-            <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                
-                <!-- Main Header Title -->
-                <div class="flex items-center space-x-3 text-center sm:text-left">
-                    <div>
-                        <h1 id="app-header-title" class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                            <span>Bersih Solutions Voucher portal</span>
-                        </h1>
-                        <!-- Cloud Sync Status Indicator -->
-                        <div class="flex items-center space-x-2 mt-0.5 justify-center sm:justify-start">
-                            <span id="sync-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
-                            <span id="sync-status-text" class="text-[11px] font-semibold text-bersih-200">Connecting to Cloud Sync...</span>
-                        </div>
-                    </div>
+    <div id="app" class="flex-grow flex flex-col">
+        <!-- Main Top Bar Header (No Graphics / Pure Text Branding) -->
+        <header class="bg-slate-900 text-white shadow-md border-b border-slate-800">
+            <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-center sm:text-left">
+                    <h1 class="text-2xl font-bold tracking-tight text-white">Bersih Solutions</h1>
+                    <p class="text-xs text-slate-400 font-medium tracking-wider uppercase mt-0.5">Voucher Portal</p>
                 </div>
 
-                <!-- Main Tabs Navigation -->
-                <nav class="flex bg-bersih-900/60 p-1.5 rounded-2xl w-full sm:w-auto border border-white/10">
-                    <button id="nav-btn-claim" onclick="switchMainTab('claim')" class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-white bg-bersih-500 shadow-lg flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-ticket"></i>
-                        <span>Claim Voucher</span>
+                <!-- Cloud Status Indicator -->
+                <div class="flex items-center gap-3">
+                    <div id="statusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span id="statusText">Local / Offline Mode</span>
+                    </div>
+                    <button onclick="refreshCloudSync()" title="Sync with Cloud" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+                        <i class="fas fa-sync-alt text-sm"></i>
                     </button>
-                    <button id="nav-btn-admin" onclick="switchMainTab('admin')" class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-bersih-200 hover:text-white hover:bg-white/10 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-user-gear"></i>
-                        <span>Admin Access</span>
-                    </button>
-                </nav>
-
+                </div>
             </div>
         </header>
 
-        <main class="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-
-            <!-- TAB 1: CLAIM VOUCHER VIEW -->
-            <section id="view-claim" class="block space-y-8">
-                
-                <!-- Claim Form Card -->
-                <div id="claim-form-card" class="max-w-xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200/80 transition-all">
-                    
-                    <div class="bg-gradient-to-br from-bersih-700 via-bersih-600 to-bersih-800 p-8 sm:p-10 text-white text-center relative overflow-hidden">
-                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-gold-500/10 rounded-full blur-xl pointer-events-none"></div>
-                        <div class="inline-flex p-4 bg-white/10 backdrop-blur-md rounded-2xl mb-4 border border-white/15 shadow-inner">
-                            <i class="fa-solid fa-gift text-3xl text-gold-400"></i>
-                        </div>
-                        <h2 id="claim-section-title" class="text-2xl sm:text-3xl font-black tracking-tight text-white">Bersih Solutions Voucher portal</h2>
-                        <p class="mt-2 text-bersih-100 text-xs sm:text-sm font-medium max-w-sm mx-auto leading-relaxed">Please fill in your details below to receive your digital voucher.</p>
-                    </div>
-
-                    <!-- Input Form -->
-                    <form id="voucher-claim-form" onsubmit="handleClaimSubmit(event)" class="p-6 sm:p-8 space-y-5">
-                        
-                        <div>
-                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">Full Name <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                                    <i class="fa-solid fa-user"></i>
-                                </span>
-                                <input type="text" id="claim-input-name" required placeholder="e.g. Alex Tan" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-bersih-500 focus:border-bersih-500 outline-none text-slate-800 font-medium transition-all text-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">Email Address <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                                    <i class="fa-solid fa-envelope"></i>
-                                </span>
-                                <input type="email" id="claim-input-email" required placeholder="e.g. alex@example.com" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-bersih-500 focus:border-bersih-500 outline-none text-slate-800 font-medium transition-all text-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">Contact Number <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                                    <i class="fa-solid fa-phone"></i>
-                                </span>
-                                <input type="tel" id="claim-input-phone" required placeholder="e.g. +673 8123456" class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-bersih-500 focus:border-bersih-500 outline-none text-slate-800 font-medium transition-all text-sm">
-                            </div>
-                        </div>
-
-                        <!-- Error Alert Box -->
-                        <div id="claim-error-alert" class="hidden p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-3">
-                            <i class="fa-solid fa-triangle-exclamation text-lg text-red-500 shrink-0"></i>
-                            <span id="claim-error-text">No voucher stock currently available.</span>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" id="btn-submit-claim" class="w-full py-4 px-6 bg-bersih-600 hover:bg-bersih-700 active:scale-[0.99] text-white font-extrabold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-3 text-base">
-                            <span>Claim Voucher</span>
-                            <i class="fa-solid fa-arrow-right text-gold-400"></i>
-                        </button>
-
-                    </form>
+        <!-- Navigation Tabs -->
+        <div class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="flex space-x-8">
+                    <button id="tabClaimBtn" onclick="switchMainTab('claim')" class="py-4 px-1 border-b-2 border-blue-600 font-semibold text-sm text-blue-600 flex items-center gap-2">
+                        <i class="fas fa-ticket-alt"></i> Claim Voucher
+                    </button>
+                    <button id="tabAdminBtn" onclick="switchMainTab('admin')" class="py-4 px-1 border-b-2 border-transparent font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center gap-2">
+                        <i class="fas fa-user-shield"></i> Admin Access
+                    </button>
                 </div>
+            </div>
+        </div>
 
-                <!-- Issued Voucher Result Screen -->
-                <div id="claim-result-card" class="hidden max-w-xl mx-auto space-y-6">
+        <main class="max-w-6xl mx-auto px-4 py-8 w-full flex-grow">
+            <!-- TAB 1: CLAIM VOUCHER -->
+            <section id="tabClaim" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     
-                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 sm:p-5 rounded-2xl flex items-center space-x-4 shadow-sm">
-                        <div class="w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center shrink-0 text-xl shadow">
-                            <i class="fa-solid fa-check"></i>
+                    <!-- Left Column: Form -->
+                    <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-bold text-slate-900" id="campaignTitleDisplay">Customer Voucher Redemption</h2>
+                            <p class="text-sm text-slate-500 mt-1">Fill in your details below to instantly claim your promotional voucher.</p>
                         </div>
-                        <div>
-                            <h4 class="font-extrabold text-sm sm:text-base">Voucher Claimed & Synced!</h4>
-                            <p class="text-xs text-emerald-700">Your details have been saved and synced across all devices.</p>
-                        </div>
+
+                        <form id="claimForm" onsubmit="handleClaimSubmit(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Full Name *</label>
+                                <input type="text" id="claimFullName" required placeholder="John Doe" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition text-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email Address *</label>
+                                <input type="email" id="claimEmail" required placeholder="john@example.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition text-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Contact Number *</label>
+                                <input type="tel" id="claimContact" required placeholder="+60 12-345 6789" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition text-sm">
+                            </div>
+
+                            <button type="submit" id="btnSubmitClaim" class="w-full mt-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-sm">
+                                <i class="fas fa-gift"></i> Claim Voucher Now
+                            </button>
+                        </form>
                     </div>
 
-                    <!-- Digital Voucher Card -->
-                    <div id="printable-voucher" class="voucher-pattern rounded-3xl p-6 sm:p-8 text-white voucher-card-shadow relative overflow-hidden border-4 border-gold-500/40">
-                        <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
-                        
-                        <div class="flex justify-between items-center mb-6 border-b border-white/15 pb-4">
-                            <div>
-                                <span class="text-xl sm:text-2xl font-black text-white tracking-tight block">Bersih Solutions</span>
-                                <span class="text-[10px] text-bersih-200 font-bold uppercase tracking-widest block">Official Service Voucher</span>
+                    <!-- Right Column: Resulting Voucher Output Card -->
+                    <div class="lg:col-span-7">
+                        <!-- Placeholder State -->
+                        <div id="voucherPlaceholder" class="bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[380px]">
+                            <div class="w-16 h-16 bg-slate-200 text-slate-400 rounded-full flex items-center justify-center text-2xl mb-4">
+                                <i class="fas fa-receipt"></i>
                             </div>
-                            <div class="text-right">
-                                <span class="bg-gold-500 text-bersih-900 text-[11px] font-black px-3.5 py-1 rounded-full uppercase tracking-wider inline-block shadow">
-                                    VERIFIED
-                                </span>
+                            <h3 class="text-base font-semibold text-slate-700">Your Voucher Will Appear Here</h3>
+                            <p class="text-xs text-slate-500 max-w-sm mt-1">Complete and submit the registration form to generate your assigned voucher code and card.</p>
+                        </div>
+
+                        <!-- Active Voucher Output Card -->
+                        <div id="voucherOutputContainer" class="hidden space-y-4">
+                            <div id="printableVoucher" class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-700 relative overflow-hidden">
+                                <!-- Background Decorative Elements -->
+                                <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="absolute -left-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                                <div class="relative z-10 flex flex-col justify-between h-full space-y-6">
+                                    <!-- Header Branding inside Card -->
+                                    <div class="flex justify-between items-start border-b border-slate-700/80 pb-4">
+                                        <div>
+                                            <span class="text-xs uppercase tracking-widest text-blue-400 font-bold">Official Voucher</span>
+                                            <h3 class="text-xl font-black text-white tracking-wide mt-0.5">BERSIH SOLUTIONS</h3>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-2xl font-black text-emerald-400 tracking-tight" id="vCardTier">$20 OFF</span>
+                                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">Promotional Value</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Voucher Details Grid -->
+                                    <div class="grid grid-cols-2 gap-4 my-2 bg-slate-800/60 p-4 rounded-xl border border-slate-700/50">
+                                        <div>
+                                            <p class="text-[10px] uppercase font-semibold text-slate-400">Claimant</p>
+                                            <p class="text-sm font-semibold text-white truncate" id="vCardName">John Doe</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] uppercase font-semibold text-slate-400">Contact</p>
+                                            <p class="text-sm font-semibold text-white truncate" id="vCardContact">+60123456789</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] uppercase font-semibold text-slate-400">Issued Date</p>
+                                            <p class="text-xs font-medium text-slate-300" id="vCardIssued">2026-09-22</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] uppercase font-semibold text-slate-400">Valid Until</p>
+                                            <p class="text-xs font-medium text-slate-300" id="vCardExpiry">2026-10-22</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Code Box -->
+                                    <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-center">
+                                        <p class="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Voucher Code</p>
+                                        <p id="vCardCode" class="text-2xl sm:text-3xl font-mono font-bold tracking-wider text-amber-400">BS-8X91-A20B</p>
+                                    </div>
+
+                                    <div class="flex justify-between items-center text-[10px] text-slate-400 pt-2 border-t border-slate-700/80">
+                                        <span>Single-use only. Terms apply.</span>
+                                        <span id="vCardEmail" class="truncate max-w-[150px]">email@example.com</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons for Voucher Card -->
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="window.print()" class="flex-1 py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-print"></i> Print / Download PDF
+                                </button>
+                                <button onclick="resetClaimForm()" class="py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm rounded-xl transition flex items-center justify-center gap-2">
+                                    <i class="fas fa-redo"></i> New Claim
+                                </button>
                             </div>
                         </div>
 
-                        <div class="my-6 bg-bersih-900/80 rounded-2xl p-5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div class="text-center sm:text-left">
-                                <span class="text-gold-400 text-[10px] uppercase font-black tracking-widest block">Allocated Reward</span>
-                                <div id="res-voucher-tier" class="text-5xl font-black text-white tracking-tight my-1">$10</div>
-                                <p id="res-voucher-terms" class="text-xs text-bersih-200 font-medium">Sah digunakan bagi mana-mana servis di Bersih Solutions dengan nilai minimum $90</p>
-                            </div>
-                            
-                            <div class="bg-white p-3.5 rounded-xl text-center min-w-[150px] shadow-lg">
-                                <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">Unique Code</span>
-                                <span id="res-voucher-code" class="text-lg font-black text-bersih-600 font-mono tracking-wider block">BS-00000</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3 text-xs bg-white/5 p-4 rounded-xl border border-white/10 mb-4">
-                            <div>
-                                <span class="text-bersih-200 text-[10px] uppercase font-bold block">Issued To</span>
-                                <span id="res-client-name" class="font-bold text-white truncate block">John Doe</span>
-                            </div>
-                            <div>
-                                <span class="text-bersih-200 text-[10px] uppercase font-bold block">Issued Date</span>
-                                <span id="res-issued-date" class="font-bold text-white block">YYYY-MM-DD</span>
-                            </div>
-                            <div>
-                                <span class="text-bersih-200 text-[10px] uppercase font-bold block">Expiry Date</span>
-                                <span id="res-expiry-date" class="font-bold text-gold-400 block">30 Nov 2026</span>
-                            </div>
-                            <div>
-                                <span class="text-bersih-200 text-[10px] uppercase font-bold block">Status</span>
-                                <span class="font-bold text-emerald-400 uppercase block">Valid</span>
-                            </div>
-                        </div>
-
-                        <ul class="text-[10px] text-bersih-200 space-y-1 list-disc list-inside font-medium opacity-90">
-                            <li>Sah digunakan sehingga <b>30 Nov 2026</b>.</li>
-                            <li>Tidak boleh ditukar dengan wang tunai atau dijual semula.</li>
-                            <li>Tidak boleh digabungkan dengan mana-mana promosi, diskaun, atau voucher lain.</li>
-                        </ul>
                     </div>
-
-                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                        <button onclick="downloadVoucherImage()" class="flex-1 py-3.5 px-5 bg-bersih-600 hover:bg-bersih-700 text-white font-bold rounded-xl shadow-md flex items-center justify-center space-x-2 transition-all">
-                            <i class="fa-solid fa-download text-gold-400"></i>
-                            <span>Download Voucher Card</span>
-                        </button>
-                        <button onclick="window.print()" class="py-3.5 px-5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-md flex items-center justify-center space-x-2 transition-all">
-                            <i class="fa-solid fa-print"></i>
-                            <span>Print</span>
-                        </button>
-                        <button onclick="resetClaimForm()" class="py-3.5 px-5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition-all">
-                            <span>Claim Another</span>
-                        </button>
-                    </div>
-
                 </div>
-
             </section>
 
-            <!-- TAB 2: ADMIN ACCESS VIEW -->
-            <section id="view-admin" class="hidden space-y-6">
-                
-                <!-- PIN Auth Screen -->
-                <div id="admin-pin-gate" class="max-w-md mx-auto bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200 text-center space-y-6">
-                    <div class="w-16 h-16 bg-bersih-50 text-bersih-600 rounded-2xl flex items-center justify-center mx-auto border border-bersih-100 shadow-inner">
-                        <i class="fa-solid fa-lock text-2xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-black text-slate-900">Admin Security Access</h3>
-                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Enter your administrator access PIN to manage voucher settings.</p>
+            <!-- TAB 2: ADMIN ACCESS -->
+            <section id="tabAdmin" class="hidden space-y-6">
+                <!-- Lock Screen (PIN Entry) -->
+                <div id="adminLockScreen" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200 my-8">
+                    <div class="text-center mb-6">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl mb-3">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-900">Admin Authentication</h2>
+                        <p class="text-xs text-slate-500 mt-1">Please enter your 7-character PIN to proceed.</p>
                     </div>
 
                     <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                         <div>
-                            <input type="password" id="admin-pin-field" required placeholder="Enter PIN Code" class="w-full px-4 py-3.5 rounded-xl border border-slate-300 text-center text-xl font-mono tracking-widest focus:ring-2 focus:ring-bersih-500 focus:border-bersih-500 outline-none">
+                            <input type="password" id="adminPinInput" placeholder="Enter PIN" required class="w-full text-center tracking-widest text-lg px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition">
                         </div>
-
-                        <div id="admin-pin-error" class="hidden text-xs text-red-600 font-bold bg-red-50 py-2.5 rounded-lg border border-red-200">
-                            Incorrect PIN security code. Please try again.
-                        </div>
-
-                        <button type="submit" class="w-full py-3.5 bg-bersih-600 hover:bg-bersih-700 text-white font-bold rounded-xl shadow-md transition-all">
-                            Unlock Dashboard
+                        <p id="adminPinError" class="text-xs text-red-600 text-center hidden font-medium">Invalid PIN. Please try again.</p>
+                        <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded-xl shadow transition">
+                            Unlock Portal
                         </button>
                     </form>
                 </div>
 
-                <!-- Admin Dashboard (Protected) -->
-                <div id="admin-dashboard-panel" class="hidden space-y-6">
-                    
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <div class="flex items-center space-x-3">
-                            <span class="p-3 bg-bersih-50 text-bersih-600 rounded-xl border border-bersih-100">
-                                <i class="fa-solid fa-shield-halved text-xl"></i>
-                            </span>
+                <!-- Unlocked Admin Dashboard -->
+                <div id="adminDashboard" class="hidden space-y-6">
+                    <!-- Top Admin Header -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Admin Dashboard</h2>
+                            <p class="text-xs text-slate-500">Manage cloud setup, stock limits, settings, and claim logs.</p>
+                        </div>
+                        <button onclick="lockAdmin()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition flex items-center gap-2">
+                            <i class="fas fa-sign-out-alt"></i> Lock Session
+                        </button>
+                    </div>
+
+                    <!-- Admin Sub-tabs Navigation -->
+                    <div class="bg-slate-200/70 p-1.5 rounded-xl flex flex-wrap gap-1">
+                        <button id="subTabApiBtn" onclick="switchAdminSubTab('api')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white text-slate-900 shadow-sm transition">
+                            <i class="fas fa-cloud"></i> Google Drive API
+                        </button>
+                        <button id="subTabStockBtn" onclick="switchAdminSubTab('stock')" class="px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">
+                            <i class="fas fa-boxes"></i> Stock Management
+                        </button>
+                        <button id="subTabValidatorBtn" onclick="switchAdminSubTab('validator')" class="px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">
+                            <i class="fas fa-search"></i> Code Validator
+                        </button>
+                        <button id="subTabSettingsBtn" onclick="switchAdminSubTab('settings')" class="px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">
+                            <i class="fas fa-sliders-h"></i> Settings
+                        </button>
+                        <button id="subTabRecordsBtn" onclick="switchAdminSubTab('records')" class="px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">
+                            <i class="fas fa-table"></i> Claim Records
+                        </button>
+                    </div>
+
+                    <!-- SUB-TAB A: GOOGLE DRIVE API -->
+                    <div id="subTabApi" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Google Apps Script Web App Integration</h3>
+                            <p class="text-xs text-slate-500 mt-1">Paste your deployed Google Apps Script URL here to sync data directly to your Google Sheet.</p>
+                        </div>
+
+                        <div class="space-y-4">
                             <div>
-                                <h3 class="font-extrabold text-slate-800 text-base">Administrator Control Panel</h3>
-                                <p class="text-xs text-slate-500">Live multi-device database active</p>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Web App URL</label>
+                                <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition text-sm font-mono">
+                            </div>
+
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="saveApiUrl()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow transition flex items-center gap-2">
+                                    <i class="fas fa-save"></i> Save URL
+                                </button>
+                                <button onclick="testCloudConnection()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm rounded-xl shadow transition flex items-center gap-2">
+                                    <i class="fas fa-network-wired"></i> Test Connection & Sync
+                                </button>
                             </div>
                         </div>
 
-                        <button onclick="lockAdminSession()" class="text-xs text-red-600 hover:text-red-700 font-bold bg-red-50 hover:bg-red-100 border border-red-200 px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2">
-                            <i class="fa-solid fa-lock"></i>
-                            <span>Lock Admin Access</span>
-                        </button>
-                    </div>
-
-                    <!-- Admin Sub-Tabs Navigation -->
-                    <div class="flex overflow-x-auto bg-slate-200/70 p-1.5 rounded-2xl space-x-1 text-xs sm:text-sm font-bold scrollbar-none border border-slate-300/50">
-                        <button onclick="switchAdminSubTab('validator')" id="subtab-btn-validator" class="px-5 py-3 rounded-xl whitespace-nowrap bg-white text-bersih-600 shadow">
-                            <i class="fa-solid fa-qrcode mr-2"></i>Code Validator
-                        </button>
-                        <button onclick="switchAdminSubTab('settings')" id="subtab-btn-settings" class="px-5 py-3 rounded-xl whitespace-nowrap text-slate-600 hover:text-slate-900">
-                            <i class="fa-solid fa-sliders mr-2"></i>Prefix & Title
-                        </button>
-                        <button onclick="switchAdminSubTab('stock')" id="subtab-btn-stock" class="px-5 py-3 rounded-xl whitespace-nowrap text-slate-600 hover:text-slate-900">
-                            <i class="fa-solid fa-boxes-stacked mr-2"></i>Stock
-                        </button>
-                        <button onclick="switchAdminSubTab('records')" id="subtab-btn-records" class="px-5 py-3 rounded-xl whitespace-nowrap text-slate-600 hover:text-slate-900">
-                            <i class="fa-solid fa-table-list mr-2"></i>Claim Records
-                        </button>
-                    </div>
-
-                    <!-- Sub-Tab 1: Code Validator -->
-                    <div id="subtab-view-validator" class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 max-w-2xl mx-auto space-y-6">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h4 class="text-lg font-black text-slate-900">Validate & Redeem Voucher</h4>
-                            <p class="text-xs text-slate-500 mt-1">Search customer unique voucher code to check validity or mark as redeemed.</p>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <input type="text" id="validator-code-input" placeholder="Enter Code (e.g. BS-12345)" class="flex-1 font-mono uppercase text-lg px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-bersih-500 outline-none tracking-wider">
-                            <button onclick="validateVoucherCode()" class="px-6 py-3 bg-bersih-600 hover:bg-bersih-700 text-white font-bold rounded-xl shadow transition-all flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                                <span>Validate Code</span>
-                            </button>
-                        </div>
-
-                        <div id="validator-result-box" class="hidden p-6 rounded-2xl border transition-all space-y-4"></div>
-                    </div>
-
-                    <!-- Sub-Tab 2: Settings -->
-                    <div id="subtab-view-settings" class="hidden bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 max-w-2xl mx-auto space-y-6">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h4 class="text-lg font-black text-slate-900">Customize Portal Settings</h4>
-                            <p class="text-xs text-slate-500 mt-1">Configure global voucher prefix and main heading text.</p>
-                        </div>
-
-                        <div class="space-y-5">
-                            <div>
-                                <label class="block text-xs font-extrabold text-slate-700 uppercase mb-2">Voucher Code Prefix</label>
-                                <input type="text" id="input-prefix-setting" placeholder="BS-" class="w-full px-4 py-3 rounded-xl border border-slate-300 font-mono font-bold uppercase focus:ring-2 focus:ring-bersih-500 outline-none">
-                                <p class="text-[11px] text-slate-400 mt-1">Newly generated codes will use format: <strong>[PREFIX][5-DIGITS]</strong> (e.g. BS-98721)</p>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-extrabold text-slate-700 uppercase mb-2">App Main Title</label>
-                                <input type="text" id="input-title-setting" placeholder="Bersih Solutions Voucher portal" class="w-full px-4 py-3 rounded-xl border border-slate-300 font-bold focus:ring-2 focus:ring-bersih-500 outline-none">
-                            </div>
-
-                            <button onclick="saveAppSettings()" class="w-full py-3.5 bg-bersih-600 hover:bg-bersih-700 text-white font-bold rounded-xl shadow transition-all">
-                                Save Settings
-                            </button>
+                        <!-- Setup Helper Accordion -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-2">
+                            <p class="font-bold text-slate-800"><i class="fas fa-info-circle text-blue-600"></i> Quick Deployment Steps:</p>
+                            <ol class="list-decimal pl-4 space-y-1">
+                                <li>In Google Sheet: Go to <b>Extensions</b> &rarr; <b>Apps Script</b>.</li>
+                                <li>Paste the deployment script and click <b>Deploy &rarr; New Deployment</b>.</li>
+                                <li>Type: <b>Web app</b> | Execute as: <b>Me</b> | Access: <b>Anyone</b>.</li>
+                                <li>Copy the generated Web App URL and paste it above.</li>
+                            </ol>
                         </div>
                     </div>
 
-                    <!-- Sub-Tab 3: Stock Management -->
-                    <div id="subtab-view-stock" class="hidden bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h4 class="text-lg font-black text-slate-900">Manage Voucher Stock Pool</h4>
-                            <p class="text-xs text-slate-500 mt-1">Control available quantities for each voucher tier ($10, $20, $30).</p>
+                    <!-- SUB-TAB B: STOCK MANAGEMENT -->
+                    <div id="subTabStock" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Voucher Stock Management</h3>
+                            <p class="text-xs text-slate-500 mt-1">View and edit available stock limits per tier.</p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            
-                            <div class="border rounded-2xl p-5 bg-slate-50 flex flex-col justify-between space-y-4">
-                                <div class="bg-bersih-600 text-white p-4 rounded-xl text-center shadow">
-                                    <div class="text-3xl font-black text-white">$10</div>
-                                    <div class="text-[10px] font-bold uppercase tracking-widest text-gold-400 mt-0.5">Tier 1 Voucher</div>
-                                    <div class="text-[10px] text-bersih-100 mt-2">Min spend $90</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- $10 Tier -->
+                            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-black text-slate-800">$10 Tier</span>
+                                    <span class="px-2.5 py-1 text-xs font-bold bg-blue-100 text-blue-700 rounded-lg" id="stockDisp10">50 Left</span>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Stock Count</label>
-                                    <input type="number" id="input-stock-10" min="0" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl font-extrabold text-slate-800 text-center">
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Set Stock Quantity</label>
+                                    <input type="number" id="inputStock10" min="0" value="50" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-600">
                                 </div>
                             </div>
 
-                            <div class="border rounded-2xl p-5 bg-slate-50 flex flex-col justify-between space-y-4">
-                                <div class="bg-bersih-600 text-white p-4 rounded-xl text-center shadow">
-                                    <div class="text-3xl font-black text-white">$20</div>
-                                    <div class="text-[10px] font-bold uppercase tracking-widest text-gold-400 mt-0.5">Tier 2 Voucher</div>
-                                    <div class="text-[10px] text-bersih-100 mt-2">Min spend $180</div>
+                            <!-- $20 Tier -->
+                            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-black text-slate-800">$20 Tier</span>
+                                    <span class="px-2.5 py-1 text-xs font-bold bg-blue-100 text-blue-700 rounded-lg" id="stockDisp20">50 Left</span>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Stock Count</label>
-                                    <input type="number" id="input-stock-20" min="0" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl font-extrabold text-slate-800 text-center">
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Set Stock Quantity</label>
+                                    <input type="number" id="inputStock20" min="0" value="50" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-600">
                                 </div>
                             </div>
 
-                            <div class="border rounded-2xl p-5 bg-slate-50 flex flex-col justify-between space-y-4">
-                                <div class="bg-bersih-600 text-white p-4 rounded-xl text-center shadow">
-                                    <div class="text-3xl font-black text-white">$30</div>
-                                    <div class="text-[10px] font-bold uppercase tracking-widest text-gold-400 mt-0.5">Tier 3 Voucher</div>
-                                    <div class="text-[10px] text-bersih-100 mt-2">Min spend $300</div>
+                            <!-- $30 Tier -->
+                            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-black text-slate-800">$30 Tier</span>
+                                    <span class="px-2.5 py-1 text-xs font-bold bg-blue-100 text-blue-700 rounded-lg" id="stockDisp30">50 Left</span>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Stock Count</label>
-                                    <input type="number" id="input-stock-30" min="0" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl font-extrabold text-slate-800 text-center">
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Set Stock Quantity</label>
+                                    <input type="number" id="inputStock30" min="0" value="50" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-600">
                                 </div>
                             </div>
-
                         </div>
 
-                        <div class="text-right border-t border-slate-100 pt-4">
-                            <button onclick="saveStockSettings()" class="px-8 py-3.5 bg-bersih-600 hover:bg-bersih-700 text-white font-bold rounded-xl shadow transition-all">
-                                Update Stock Quantities
-                            </button>
-                        </div>
+                        <button onclick="saveStockLimits()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> Save Stock Quantities
+                        </button>
                     </div>
 
-                    <!-- Sub-Tab 4: Records Table -->
-                    <div id="subtab-view-records" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-5">
-                        
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h4 class="text-lg font-black text-slate-900">Claim Records Database</h4>
-                                <p class="text-xs text-slate-500">Real-time synchronized log of all generated voucher claims</p>
-                            </div>
-                            <button onclick="downloadRecordsCSV()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow flex items-center space-x-2 transition-all">
-                                <i class="fa-solid fa-file-csv text-base"></i>
-                                <span>Export CSV Spreadsheet</span>
+                    <!-- SUB-TAB C: CODE VALIDATOR -->
+                    <div id="subTabValidator" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Voucher Code Validator</h3>
+                            <p class="text-xs text-slate-500 mt-1">Search and verify voucher status by code.</p>
+                        </div>
+
+                        <div class="flex gap-3 max-w-md">
+                            <input type="text" id="validatorSearchCode" placeholder="e.g. BS-XXXX-XXXX" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 font-mono text-sm uppercase focus:ring-2 focus:ring-blue-600 outline-none">
+                            <button onclick="validateVoucherCode()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded-xl shadow transition">
+                                Verify
                             </button>
                         </div>
 
-                        <div class="relative max-w-md">
-                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </span>
-                            <input type="text" id="search-records-input" onkeyup="filterClaimRecordsTable()" placeholder="Search by name, email, or code..." class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-bersih-500 outline-none">
+                        <div id="validatorResult" class="hidden p-4 rounded-xl border"></div>
+                    </div>
+
+                    <!-- SUB-TAB D: PREFIX & SETTINGS -->
+                    <div id="subTabSettings" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Campaign & Portal Settings</h3>
+                            <p class="text-xs text-slate-500 mt-1">Customize voucher code prefixes and display titles.</p>
                         </div>
 
-                        <div class="overflow-x-auto rounded-2xl border border-slate-200">
-                            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Voucher Prefix</label>
+                                <input type="text" id="settingPrefix" value="BS" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-blue-600 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Campaign Title</label>
+                                <input type="text" id="settingCampaignTitle" value="Customer Voucher Redemption" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-blue-600 outline-none">
+                            </div>
+                        </div>
+
+                        <button onclick="savePortalSettings()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+
+                    <!-- SUB-TAB E: CLAIM RECORDS TABLE -->
+                    <div id="subTabRecords" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900">Claim Records</h3>
+                                <p class="text-xs text-slate-500 mt-1">Complete log of all issued vouchers.</p>
+                            </div>
+                            <button onclick="exportClaimsToCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow transition flex items-center gap-2">
+                                <i class="fas fa-file-excel"></i> Export to CSV
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-600 font-extrabold border-b border-slate-200 text-[11px] uppercase tracking-wider">
-                                        <th class="p-3.5">Code</th>
-                                        <th class="p-3.5">Full Name</th>
-                                        <th class="p-3.5">Email</th>
-                                        <th class="p-3.5">Contact</th>
-                                        <th class="p-3.5">Tier</th>
-                                        <th class="p-3.5">Issued Date</th>
-                                        <th class="p-3.5">Expiry Date</th>
-                                        <th class="p-3.5">Status</th>
-                                        <th class="p-3.5">Action</th>
+                                    <tr class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                                        <th class="p-3">Timestamp</th>
+                                        <th class="p-3">Claimant</th>
+                                        <th class="p-3">Email</th>
+                                        <th class="p-3">Contact</th>
+                                        <th class="p-3">Voucher Code</th>
+                                        <th class="p-3">Tier</th>
+                                        <th class="p-3">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-claim-records-body" class="divide-y divide-slate-100">
-                                    <!-- Dynamic Rows -->
+                                <tbody id="claimsTableBody" class="divide-y divide-slate-200 text-xs text-slate-700">
+                                    <!-- Dynamic rows -->
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
-
         </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
+            &copy; 2026 Bersih Solutions. All rights reserved.
+        </footer>
     </div>
 
-    <!-- App Footer -->
-    <footer class="bg-slate-200/80 border-t border-slate-300/80 py-4 text-center text-xs text-slate-600">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-            <p>&copy; 2026 Bersih Solutions. All rights reserved.</p>
-            <p class="font-medium text-slate-500">Bersih Solutions Voucher portal</p>
-        </div>
-    </footer>
-
-    <!-- Toast Notification -->
-    <div id="toast-popup" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl z-50 flex items-center space-x-3 pointer-events-none">
-        <i class="fa-solid fa-circle-info text-gold-400"></i>
-        <span id="toast-popup-text" class="text-xs sm:text-sm font-semibold">Notification message</span>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Global app configuration context
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bersih-voucher-portal-prod';
-        
-        // Fallback demo config if environment config is not injected
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyDemoKeyForBersihVoucher12345",
-            authDomain: "bersih-voucher.firebaseapp.com",
-            projectId: "bersih-voucher-sync",
-            storageBucket: "bersih-voucher.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef123456"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // App Centralized State
-        window.appState = {
-            settings: {
-                prefix: "BS-",
-                title: "Bersih Solutions Voucher portal"
-            },
-            stock: {
-                10: 50,
-                20: 30,
-                30: 20
-            },
-            records: [],
-            adminAuthenticated: false,
-            dbConnected: false
-        };
-
-        // Standardized Firestore Document & Collection Paths (Public data scope)
-        const settingsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
-        const stockDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stock', 'levels');
-        const recordsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'records');
-
-        async function initFirebaseSync() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (err) {
-                console.warn("Auth initialization error, using local fallback mode:", err);
-                setSyncStatus(false, "Offline / Local Mode");
-            }
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    window.appState.dbConnected = true;
-                    setSyncStatus(true, "Cloud Sync Active across all devices");
-                    bindRealtimeListeners();
-                } else {
-                    setSyncStatus(false, "Disconnected");
-                }
-            });
-        }
-
-        function setSyncStatus(isConnected, message) {
-            const dot = document.getElementById('sync-status-dot');
-            const text = document.getElementById('sync-status-text');
-            if (dot && text) {
-                text.innerText = message;
-                if (isConnected) {
-                    dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-sm";
-                } else {
-                    dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse inline-block";
-                }
-            }
-        }
-
-        // Realtime Firestore Sync Engine
-        function bindRealtimeListeners() {
-            // Listen to settings changes across devices
-            onSnapshot(settingsDocRef, (snap) => {
-                if (snap.exists()) {
-                    window.appState.settings = { ...window.appState.settings, ...snap.data() };
-                    updateUIFromSettings();
-                } else {
-                    setDoc(settingsDocRef, window.appState.settings);
-                }
-            }, (err) => console.log("Settings listener error:", err));
-
-            // Listen to stock level changes across devices
-            onSnapshot(stockDocRef, (snap) => {
-                if (snap.exists()) {
-                    window.appState.stock = { ...window.appState.stock, ...snap.data() };
-                    updateUIFromStock();
-                } else {
-                    setDoc(stockDocRef, window.appState.stock);
-                }
-            }, (err) => console.log("Stock listener error:", err));
-
-            // Listen to claim record updates in real time across devices
-            onSnapshot(recordsCollectionRef, (snap) => {
-                const fetchedRecords = [];
-                snap.forEach((docSnap) => {
-                    fetchedRecords.push(docSnap.data());
-                });
-                
-                // Sort by timestamp descending
-                fetchedRecords.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-                
-                window.appState.records = fetchedRecords;
-                renderClaimRecordsTable();
-            }, (err) => console.log("Records listener error:", err));
-        }
-
-        window.addEventListener('load', () => {
-            initFirebaseSync();
-        });
-
-        // Global Sync Handlers
-        window.saveAppSettingsToDb = async function(newSettings) {
-            try {
-                await setDoc(settingsDocRef, newSettings, { merge: true });
-                showToast("Settings synced across all devices!");
-            } catch (e) {
-                showToast("Updated locally");
-            }
-        };
-
-        window.saveStockToDb = async function(newStock) {
-            try {
-                await setDoc(stockDocRef, newStock, { merge: true });
-                showToast("Stock quantities synced globally!");
-            } catch (e) {
-                showToast("Updated locally");
-            }
-        };
-
-        window.saveRecordToDb = async function(record) {
-            try {
-                const recordDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'records', record.code);
-                await setDoc(recordDocRef, record);
-            } catch (e) {
-                console.log("Record saved locally", e);
-            }
-        };
-
-        window.updateRecordStatusInDb = async function(code, status) {
-            try {
-                const recordDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'records', code);
-                await setDoc(recordDocRef, { status: status }, { merge: true });
-            } catch (e) {
-                console.log("Status updated locally", e);
-            }
-        };
-    </script>
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
     <script>
-        // Main Tab Switcher
-        function switchMainTab(tabName) {
-            const btnClaim = document.getElementById('nav-btn-claim');
-            const btnAdmin = document.getElementById('nav-btn-admin');
-            const viewClaim = document.getElementById('view-claim');
-            const viewAdmin = document.getElementById('view-admin');
+        // State Management
+        const ADMIN_PIN = "BS1234!";
+        let state = {
+            apiUrl: localStorage.getItem("bs_api_url") || "",
+            prefix: localStorage.getItem("bs_prefix") || "BS",
+            campaignTitle: localStorage.getItem("bs_campaign_title") || "Customer Voucher Redemption",
+            stock: JSON.parse(localStorage.getItem("bs_stock")) || { "$10": 50, "$20": 50, "$30": 50 },
+            claims: JSON.parse(localStorage.getItem("bs_claims")) || [],
+            isCloudConnected: false,
+            isAdminUnlocked: false
+        };
 
-            if (tabName === 'claim') {
-                viewClaim.classList.remove('hidden');
-                viewAdmin.classList.add('hidden');
-                btnClaim.className = "flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-white bg-bersih-500 shadow-lg flex items-center justify-center space-x-2";
-                btnAdmin.className = "flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-bersih-200 hover:text-white hover:bg-white/10 flex items-center justify-center space-x-2";
+        // Initialize Application
+        window.onload = function() {
+            updateUI();
+            if (state.apiUrl) {
+                testCloudConnection(true);
+            }
+        };
+
+        // UI & Tab Switching
+        function switchMainTab(tab) {
+            const claimTab = document.getElementById("tabClaim");
+            const adminTab = document.getElementById("tabAdmin");
+            const claimBtn = document.getElementById("tabClaimBtn");
+            const adminBtn = document.getElementById("tabAdminBtn");
+
+            if (tab === 'claim') {
+                claimTab.classList.remove("hidden");
+                adminTab.classList.add("hidden");
+                claimBtn.className = "py-4 px-1 border-b-2 border-blue-600 font-semibold text-sm text-blue-600 flex items-center gap-2";
+                adminBtn.className = "py-4 px-1 border-b-2 border-transparent font-medium text-sm text-slate-500 hover:text-slate-700 flex items-center gap-2";
             } else {
-                viewClaim.classList.add('hidden');
-                viewAdmin.classList.remove('hidden');
-                btnAdmin.className = "flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-white bg-bersih-500 shadow-lg flex items-center justify-center space-x-2";
-                btnClaim.className = "flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-bersih-200 hover:text-white hover:bg-white/10 flex items-center justify-center space-x-2";
-
-                if (!window.appState.adminAuthenticated) {
-                    document.getElementById('admin-pin-gate').classList.remove('hidden');
-                    document.getElementById('admin-dashboard-panel').classList.add('hidden');
-                } else {
-                    document.getElementById('admin-pin-gate').classList.add('hidden');
-                    document.getElementById('admin-dashboard-panel').classList.remove('hidden');
-                }
+                claimTab.classList.add("hidden");
+                adminTab.classList.remove("hidden");
+                adminBtn.className = "py-4 px-1 border-b-2 border-blue-600 font-semibold text-sm text-blue-600 flex items-center gap-2";
+                claimBtn.className = "py-4 px-1 border-b-2 border-transparent font-medium text-sm text-slate-500 hover:text-slate-700 flex items-center gap-2";
             }
         }
 
-        // Sub-Tab Switcher for Admin
-        function switchAdminSubTab(subTab) {
-            const tabs = ['validator', 'settings', 'stock', 'records'];
+        function switchAdminSubTab(sub) {
+            const tabs = ['api', 'stock', 'validator', 'settings', 'records'];
             tabs.forEach(t => {
-                const btn = document.getElementById(`subtab-btn-${t}`);
-                const view = document.getElementById(`subtab-view-${t}`);
-                if (t === subTab) {
-                    btn.className = "px-5 py-3 rounded-xl whitespace-nowrap bg-white text-bersih-600 shadow";
-                    view.classList.remove('hidden');
+                const el = document.getElementById("subTab" + capitalize(t));
+                const btn = document.getElementById("subTab" + capitalize(t) + "Btn");
+                if (t === sub) {
+                    el.classList.remove("hidden");
+                    btn.className = "px-4 py-2 text-xs font-semibold rounded-lg bg-white text-slate-900 shadow-sm transition";
                 } else {
-                    btn.className = "px-5 py-3 rounded-xl whitespace-nowrap text-slate-600 hover:text-slate-900";
-                    view.classList.add('hidden');
+                    el.classList.add("hidden");
+                    btn.className = "px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
                 }
             });
         }
 
-        // Admin PIN Verification
-        function handleAdminLogin(event) {
-            event.preventDefault();
-            const pinVal = document.getElementById('admin-pin-field').value;
-            const errorMsg = document.getElementById('admin-pin-error');
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
 
-            if (pinVal === 'BS1234!') {
-                window.appState.adminAuthenticated = true;
-                document.getElementById('admin-pin-gate').classList.add('hidden');
-                document.getElementById('admin-dashboard-panel').classList.remove('hidden');
-                errorMsg.classList.add('hidden');
-                document.getElementById('admin-pin-field').value = '';
-                showToast("Admin access unlocked");
+        // Admin Authentication
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById("adminPinInput").value;
+            const err = document.getElementById("adminPinError");
+
+            if (input === ADMIN_PIN) {
+                state.isAdminUnlocked = true;
+                err.classList.add("hidden");
+                document.getElementById("adminLockScreen").classList.add("hidden");
+                document.getElementById("adminDashboard").classList.remove("hidden");
+                renderClaimsTable();
             } else {
-                errorMsg.classList.remove('hidden');
+                err.classList.remove("hidden");
             }
         }
 
-        function lockAdminSession() {
-            window.appState.adminAuthenticated = false;
-            document.getElementById('admin-pin-gate').classList.remove('hidden');
-            document.getElementById('admin-dashboard-panel').classList.add('hidden');
-            showToast("Admin session locked");
+        function lockAdmin() {
+            state.isAdminUnlocked = false;
+            document.getElementById("adminPinInput").value = "";
+            document.getElementById("adminLockScreen").classList.remove("hidden");
+            document.getElementById("adminDashboard").classList.add("hidden");
         }
 
-        // Select Random Tier based on stock
-        function selectRandomAvailableTier() {
-            const available = [];
-            if ((window.appState.stock[10] || 0) > 0) available.push("10");
-            if ((window.appState.stock[20] || 0) > 0) available.push("20");
-            if ((window.appState.stock[30] || 0) > 0) available.push("30");
-
-            if (available.length === 0) return null;
-            return available[Math.floor(Math.random() * available.length)];
+        // Voucher Allocation & Code Generator
+        function generateVoucherCode() {
+            const randomChunk1 = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const randomChunk2 = Math.random().toString(36).substring(2, 6).toUpperCase();
+            return `${state.prefix}-${randomChunk1}-${randomChunk2}`;
         }
 
-        // Submit Voucher Claim
-        function handleClaimSubmit(event) {
-            event.preventDefault();
-            const name = document.getElementById('claim-input-name').value.trim();
-            const email = document.getElementById('claim-input-email').value.trim();
-            const phone = document.getElementById('claim-input-phone').value.trim();
-            const alertBox = document.getElementById('claim-error-alert');
+        function allocateRandomTier() {
+            const availableTiers = [];
+            if (state.stock["$10"] > 0) availableTiers.push("$10");
+            if (state.stock["$20"] > 0) availableTiers.push("$20");
+            if (state.stock["$30"] > 0) availableTiers.push("$30");
 
-            const selectedTier = selectRandomAvailableTier();
+            if (availableTiers.length === 0) return null;
+            return availableTiers[Math.floor(Math.random() * availableTiers.length)];
+        }
 
-            if (!selectedTier) {
-                alertBox.classList.remove('hidden');
-                document.getElementById('claim-error-text').innerText = "All voucher tiers are currently out of stock. Please contact administrator.";
+        // Handle Claim Submission
+        async function handleClaimSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById("btnSubmitClaim");
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch animate-spin"></i> Allocating Voucher...`;
+
+            const fullName = document.getElementById("claimFullName").value.trim();
+            const email = document.getElementById("claimEmail").value.trim();
+            const contact = document.getElementById("claimContact").value.trim();
+
+            const allocatedTier = allocateRandomTier();
+
+            if (!allocatedTier) {
+                showToast("Sorry, all voucher stocks are currently depleted!", "error");
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-gift"></i> Claim Voucher Now`;
                 return;
             }
-            alertBox.classList.add('hidden');
 
-            // Decrement Stock
-            window.appState.stock[selectedTier] -= 1;
-            if (window.saveStockToDb) {
-                window.saveStockToDb(window.appState.stock);
-            }
-
-            // Generate Code
-            const randomDigits = Math.floor(10000 + Math.random() * 90000);
-            const prefix = window.appState.settings.prefix || 'BS-';
-            const uniqueCode = `${prefix}${randomDigits}`;
-            
+            const code = generateVoucherCode();
             const now = new Date();
             const issuedDate = now.toISOString().split('T')[0];
-            const expiryDate = "30 Nov 2026";
+            const expiry = new Date();
+            expiry.setMonth(expiry.getMonth() + 1);
+            const expiryDate = expiry.toISOString().split('T')[0];
 
-            // Record object
-            const newRecord = {
-                code: uniqueCode,
-                name: name,
+            const claimData = {
+                action: "claim",
+                fullName: fullName,
                 email: email,
-                phone: phone,
-                tier: `$${selectedTier}`,
+                contact: contact,
+                voucherCode: code,
+                tier: allocatedTier,
                 issuedDate: issuedDate,
                 expiryDate: expiryDate,
-                status: 'Valid',
-                timestamp: now.toISOString()
+                timestamp: new Date().toLocaleString()
             };
 
-            // Save Record
-            window.appState.records.unshift(newRecord);
-            if (window.saveRecordToDb) {
-                window.saveRecordToDb(newRecord);
+            // Deduct local stock
+            state.stock[allocatedTier]--;
+            state.claims.unshift(claimData);
+            saveLocalState();
+
+            // Cloud Sync if API configured
+            if (state.apiUrl) {
+                try {
+                    await fetch(state.apiUrl, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(claimData)
+                    });
+                    showToast("Claim successfully logged to Google Drive!", "success");
+                } catch (err) {
+                    showToast("Logged locally. Cloud sync failed.", "warning");
+                }
+            } else {
+                showToast("Voucher claimed in Local Mode.", "info");
             }
 
-            // Populate Result Card
-            document.getElementById('res-voucher-tier').innerText = `$${selectedTier}`;
-            document.getElementById('res-voucher-code').innerText = uniqueCode;
-            document.getElementById('res-client-name').innerText = name;
-            document.getElementById('res-issued-date').innerText = issuedDate;
-            document.getElementById('res-expiry-date').innerText = expiryDate;
+            // Display Card Output
+            displayVoucherCard(claimData);
+            updateUI();
 
-            let terms = "Sah digunakan bagi mana-mana servis di Bersih Solutions";
-            if (selectedTier === "10") terms += " dengan nilai minimum $90";
-            else if (selectedTier === "20") terms += " dengan nilai minimum $180";
-            else if (selectedTier === "30") terms += " dengan nilai minimum $300";
-            document.getElementById('res-voucher-terms').innerText = terms;
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-gift"></i> Claim Voucher Now`;
+        }
 
-            // Switch to result view
-            document.getElementById('claim-form-card').classList.add('hidden');
-            document.getElementById('claim-result-card').classList.remove('hidden');
+        function displayVoucherCard(data) {
+            document.getElementById("vCardName").innerText = data.fullName;
+            document.getElementById("vCardContact").innerText = data.contact;
+            document.getElementById("vCardEmail").innerText = data.email;
+            document.getElementById("vCardTier").innerText = `${data.tier} OFF`;
+            document.getElementById("vCardCode").innerText = data.voucherCode;
+            document.getElementById("vCardIssued").innerText = data.issuedDate;
+            document.getElementById("vCardExpiry").innerText = data.expiryDate;
 
-            showToast(`$${selectedTier} Voucher issued & synced across all devices!`);
+            document.getElementById("voucherPlaceholder").classList.add("hidden");
+            document.getElementById("voucherOutputContainer").classList.remove("hidden");
         }
 
         function resetClaimForm() {
-            document.getElementById('voucher-claim-form').reset();
-            document.getElementById('claim-form-card').classList.remove('hidden');
-            document.getElementById('claim-result-card').classList.add('hidden');
+            document.getElementById("claimForm").reset();
+            document.getElementById("voucherPlaceholder").classList.remove("hidden");
+            document.getElementById("voucherOutputContainer").classList.add("hidden");
         }
 
-        // Download Voucher Image
-        function downloadVoucherImage() {
-            const voucherElement = document.getElementById('printable-voucher');
-            showToast("Generating image file...");
-
-            html2canvas(voucherElement, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: null
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Bersih-Voucher-${document.getElementById('res-voucher-code').innerText}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(err => {
-                console.error("Voucher download error:", err);
-                showToast("Download failed. Use print button instead.");
-            });
+        // API Configuration & Cloud Sync
+        function saveApiUrl() {
+            const url = document.getElementById("scriptUrlInput").value.trim();
+            state.apiUrl = url;
+            localStorage.setItem("bs_api_url", url);
+            showToast("Google Apps Script URL saved!", "success");
+            testCloudConnection();
         }
 
-        // Validate Voucher Code
-        function validateVoucherCode() {
-            const inputCode = document.getElementById('validator-code-input').value.trim().toUpperCase();
-            const resultBox = document.getElementById('validator-result-box');
-
-            if (!inputCode) {
-                showToast("Please enter a voucher code");
+        async function testCloudConnection(silent = false) {
+            if (!state.apiUrl) {
+                setCloudStatus(false);
+                if (!silent) showToast("Please enter a valid Web App URL.", "error");
                 return;
             }
 
-            const record = window.appState.records.find(r => r.code.toUpperCase() === inputCode);
-            resultBox.classList.remove('hidden');
+            try {
+                const res = await fetch(state.apiUrl);
+                const data = await res.json();
+                if (data.status === "success") {
+                    setCloudStatus(true);
+                    if (data.stock) state.stock = data.stock;
+                    if (data.claims) state.claims = data.claims;
+                    saveLocalState();
+                    updateUI();
+                    if (!silent) showToast("Successfully connected to Google Drive!", "success");
+                } else {
+                    setCloudStatus(false);
+                    if (!silent) showToast("Connected, but response invalid.", "warning");
+                }
+            } catch (err) {
+                setCloudStatus(false);
+                if (!silent) showToast("Cloud connection error. Check URL or network.", "error");
+            }
+        }
 
-            if (!record) {
-                resultBox.className = "p-5 rounded-2xl border bg-red-50 border-red-200 text-red-800 space-y-2";
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-base text-red-700">
-                        <i class="fa-solid fa-circle-xmark text-lg"></i>
-                        <span>Voucher Code Not Found</span>
-                    </div>
-                    <p class="text-xs">The code <strong>${inputCode}</strong> is not present in our synced database.</p>
-                `;
-            } else if (record.status === 'Redeemed') {
-                resultBox.className = "p-5 rounded-2xl border bg-amber-50 border-amber-200 text-amber-800 space-y-2";
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-base text-amber-700">
-                        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-                        <span>Already Redeemed</span>
-                    </div>
-                    <p class="text-xs">This voucher was previously redeemed by <strong>${record.name}</strong> (${record.tier}).</p>
+        function refreshCloudSync() {
+            testCloudConnection();
+        }
+
+        function setCloudStatus(isConnected) {
+            state.isCloudConnected = isConnected;
+            const badge = document.getElementById("statusBadge");
+            const dot = document.getElementById("statusDot");
+            const text = document.getElementById("statusText");
+
+            if (isConnected) {
+                badge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                text.innerText = "Google Drive Connected";
+            } else {
+                badge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+                text.innerText = "Local / Offline Mode";
+            }
+        }
+
+        // Save Stock & Settings
+        async function saveStockLimits() {
+            state.stock["$10"] = parseInt(document.getElementById("inputStock10").value) || 0;
+            state.stock["$20"] = parseInt(document.getElementById("inputStock20").value) || 0;
+            state.stock["$30"] = parseInt(document.getElementById("inputStock30").value) || 0;
+
+            saveLocalState();
+            updateUI();
+
+            if (state.apiUrl) {
+                try {
+                    await fetch(state.apiUrl, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "updateStock", stock: state.stock })
+                    });
+                    showToast("Stock updated on Cloud & Locally!", "success");
+                } catch (e) {
+                    showToast("Stock saved locally.", "warning");
+                }
+            } else {
+                showToast("Stock saved locally.", "info");
+            }
+        }
+
+        function savePortalSettings() {
+            state.prefix = document.getElementById("settingPrefix").value.trim().toUpperCase() || "BS";
+            state.campaignTitle = document.getElementById("settingCampaignTitle").value.trim() || "Customer Voucher Redemption";
+
+            localStorage.setItem("bs_prefix", state.prefix);
+            localStorage.setItem("bs_campaign_title", state.campaignTitle);
+
+            updateUI();
+            showToast("Portal settings saved!", "success");
+        }
+
+        // Code Validator
+        function validateVoucherCode() {
+            const query = document.getElementById("validatorSearchCode").value.trim().toUpperCase();
+            const res = document.getElementById("validatorResult");
+
+            if (!query) return;
+
+            const match = state.claims.find(c => c.voucherCode === query);
+
+            res.classList.remove("hidden");
+            if (match) {
+                res.className = "p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-xs space-y-1 text-slate-800";
+                res.innerHTML = `
+                    <div class="flex items-center gap-2 text-emerald-700 font-bold"><i class="fas fa-check-circle"></i> Valid Voucher Code</div>
+                    <p><b>Claimant:</b> ${match.fullName} (${match.contact})</p>
+                    <p><b>Tier:</b> ${match.tier} OFF</p>
+                    <p><b>Timestamp:</b> ${match.timestamp}</p>
                 `;
             } else {
-                resultBox.className = "p-5 rounded-2xl border bg-emerald-50 border-emerald-200 text-emerald-900 space-y-4";
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-base text-emerald-700">
-                        <i class="fa-solid fa-circle-check text-lg"></i>
-                        <span>Valid Voucher Code</span>
-                    </div>
-                    <div class="text-xs space-y-1.5 bg-white/80 p-3.5 rounded-xl border border-emerald-100 font-medium">
-                        <p><strong>Code:</strong> ${record.code}</p>
-                        <p><strong>Holder Name:</strong> ${record.name}</p>
-                        <p><strong>Tier Value:</strong> ${record.tier}</p>
-                        <p><strong>Contact:</strong> ${record.phone} (${record.email})</p>
-                        <p><strong>Issued Date:</strong> ${record.issuedDate}</p>
-                        <p><strong>Expiry Date:</strong> ${record.expiryDate}</p>
-                    </div>
-                    <button onclick="toggleRecordStatus('${record.code}', 'Redeemed')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition-all text-xs sm:text-sm">
-                        Mark as Redeemed Now
-                    </button>
-                `;
+                res.className = "p-4 rounded-xl border border-red-200 bg-red-50 text-xs space-y-1 text-slate-800";
+                res.innerHTML = `<div class="flex items-center gap-2 text-red-700 font-bold"><i class="fas fa-times-circle"></i> Voucher Code Not Found</div>`;
             }
         }
 
-        function toggleRecordStatus(code, newStatus) {
-            const record = window.appState.records.find(r => r.code === code);
-            if (record) {
-                record.status = newStatus;
-                if (window.updateRecordStatusInDb) {
-                    window.updateRecordStatusInDb(code, newStatus);
-                }
-                validateVoucherCode();
-                renderClaimRecordsTable();
-                showToast(`Status updated to ${newStatus}`);
-            }
+        // Render Tables & Sync UI
+        function updateUI() {
+            document.getElementById("campaignTitleDisplay").innerText = state.campaignTitle;
+            document.getElementById("scriptUrlInput").value = state.apiUrl;
+            document.getElementById("settingPrefix").value = state.prefix;
+            document.getElementById("settingCampaignTitle").value = state.campaignTitle;
+
+            document.getElementById("stockDisp10").innerText = `${state.stock["$10"]} Left`;
+            document.getElementById("stockDisp20").innerText = `${state.stock["$20"]} Left`;
+            document.getElementById("stockDisp30").innerText = `${state.stock["$30"]} Left`;
+
+            document.getElementById("inputStock10").value = state.stock["$10"];
+            document.getElementById("inputStock20").value = state.stock["$20"];
+            document.getElementById("inputStock30").value = state.stock["$30"];
+
+            renderClaimsTable();
         }
 
-        // Save Settings
-        function saveAppSettings() {
-            const prefix = document.getElementById('input-prefix-setting').value.trim().toUpperCase();
-            const title = document.getElementById('input-title-setting').value.trim();
-
-            window.appState.settings = { prefix, title };
-            if (window.saveAppSettingsToDb) {
-                window.saveAppSettingsToDb(window.appState.settings);
-            }
-            updateUIFromSettings();
-        }
-
-        function updateUIFromSettings() {
-            const title = window.appState.settings.title || "Bersih Solutions Voucher portal";
-            document.getElementById('app-header-title').innerText = title;
-            document.getElementById('claim-section-title').innerText = title;
-            document.getElementById('input-prefix-setting').value = window.appState.settings.prefix || "BS-";
-            document.getElementById('input-title-setting').value = title;
-        }
-
-        // Save Stock
-        function saveStockSettings() {
-            const s10 = parseInt(document.getElementById('input-stock-10').value) || 0;
-            const s20 = parseInt(document.getElementById('input-stock-20').value) || 0;
-            const s30 = parseInt(document.getElementById('input-stock-30').value) || 0;
-
-            window.appState.stock = { 10: s10, 20: s20, 30: s30 };
-            if (window.saveStockToDb) {
-                window.saveStockToDb(window.appState.stock);
-            }
-            updateUIFromStock();
-        }
-
-        function updateUIFromStock() {
-            document.getElementById('input-stock-10').value = window.appState.stock[10] || 0;
-            document.getElementById('input-stock-20').value = window.appState.stock[20] || 0;
-            document.getElementById('input-stock-30').value = window.appState.stock[30] || 0;
-        }
-
-        // Render Records Table
-        function renderClaimRecordsTable() {
-            const tbody = document.getElementById('table-claim-records-body');
-            tbody.innerHTML = '';
-
-            if (!window.appState.records || window.appState.records.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400 font-medium">No claim records available yet.</td></tr>`;
+        function renderClaimsTable() {
+            const tbody = document.getElementById("claimsTableBody");
+            if (state.claims.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">No claim records available yet.</td></tr>`;
                 return;
             }
 
-            window.appState.records.forEach(rec => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition-colors";
-
-                const isRedeemed = rec.status === 'Redeemed';
-                const statusBadge = isRedeemed 
-                    ? `<span class="bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase">Redeemed</span>`
-                    : `<span class="bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase">Valid</span>`;
-
-                const actionButton = isRedeemed
-                    ? `<button onclick="toggleRecordStatus('${rec.code}', 'Valid')" class="text-[11px] font-bold text-bersih-600 hover:text-bersih-800 underline">Set Valid</button>`
-                    : `<button onclick="toggleRecordStatus('${rec.code}', 'Redeemed')" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-800 underline">Mark Redeemed</button>`;
-
-                tr.innerHTML = `
-                    <td class="p-3.5 font-mono font-black text-bersih-600">${rec.code}</td>
-                    <td class="p-3.5 font-bold text-slate-800">${rec.name}</td>
-                    <td class="p-3.5 text-slate-600">${rec.email}</td>
-                    <td class="p-3.5 text-slate-600">${rec.phone}</td>
-                    <td class="p-3.5 font-extrabold text-slate-900">${rec.tier}</td>
-                    <td class="p-3.5 text-slate-500 text-xs">${rec.issuedDate}</td>
-                    <td class="p-3.5 text-slate-500 text-xs">${rec.expiryDate}</td>
-                    <td class="p-3.5">${statusBadge}</td>
-                    <td class="p-3.5">${actionButton}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+            tbody.innerHTML = state.claims.map(c => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3 text-slate-500">${c.timestamp || 'N/A'}</td>
+                    <td class="p-3 font-semibold text-slate-900">${c.fullName}</td>
+                    <td class="p-3 text-slate-600">${c.email}</td>
+                    <td class="p-3 text-slate-600">${c.contact}</td>
+                    <td class="p-3 font-mono font-bold text-blue-600">${c.voucherCode}</td>
+                    <td class="p-3 font-bold text-emerald-600">${c.tier}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700">Valid</span></td>
+                </tr>
+            `).join('');
         }
 
-        function filterClaimRecordsTable() {
-            const query = document.getElementById('search-records-input').value.toLowerCase();
-            const rows = document.querySelectorAll('#table-claim-records-body tr');
-
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-
-        // Export Records to CSV
-        function downloadRecordsCSV() {
-            if (!window.appState.records || window.appState.records.length === 0) {
-                showToast("No claim records to export");
+        function exportClaimsToCSV() {
+            if (state.claims.length === 0) {
+                showToast("No claims data to export.", "warning");
                 return;
             }
 
-            const headers = ["Unique Code", "Full Name", "Email Address", "Contact Number", "Voucher Tier", "Issued Date", "Expiry Date", "Status"];
-            const csvRows = [headers.join(",")];
-
-            window.appState.records.forEach(rec => {
-                const row = [
-                    `"${rec.code}"`,
-                    `"${rec.name}"`,
-                    `"${rec.email}"`,
-                    `"${rec.phone}"`,
-                    `"${rec.tier}"`,
-                    `"${rec.issuedDate}"`,
-                    `"${rec.expiryDate}"`,
-                    `"${rec.status}"`
-                ];
-                csvRows.push(row.join(","));
+            let csv = "Timestamp,Full Name,Email,Contact,Voucher Code,Tier,Status\n";
+            state.claims.forEach(c => {
+                csv += `"${c.timestamp}","${c.fullName}","${c.email}","${c.contact}","${c.voucherCode}","${c.tier}","Valid"\n`;
             });
 
-            const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Bersih_Voucher_Claim_Records_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("CSV exported successfully!");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.setAttribute("href", url);
+            a.setAttribute("download", `Bersih_Vouchers_${new Date().toISOString().split('T')[0]}.csv`);
+            a.click();
         }
 
-        // Toast Helper
-        function showToast(msg) {
-            const toast = document.getElementById('toast-popup');
-            document.getElementById('toast-popup-text').innerText = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
+        function saveLocalState() {
+            localStorage.setItem("bs_stock", JSON.stringify(state.stock));
+            localStorage.setItem("bs_claims", JSON.stringify(state.claims));
+        }
+
+        function showToast(msg, type = "info") {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+
+            const bgColors = {
+                success: "bg-emerald-800 text-white",
+                error: "bg-red-800 text-white",
+                warning: "bg-amber-800 text-white",
+                info: "bg-slate-800 text-white"
+            };
+
+            toast.className = `px-4 py-3 rounded-xl shadow-lg text-xs font-semibold flex items-center gap-2 ${bgColors[type] || bgColors.info} transition-all transform duration-300 pointer-events-auto`;
+            toast.innerHTML = `<span>${msg}</span>`;
+
+            container.appendChild(toast);
             setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+                toast.remove();
+            }, 3500);
         }
     </script>
 </body>
