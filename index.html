@@ -311,7 +311,7 @@
             <div class="flex justify-between items-center">
               <h3 class="text-base font-bold text-slate-800">Voucher Claim Records</h3>
               <div class="flex space-x-2">
-                <button onclick="renderLogsTable()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-200 flex items-center space-x-1">
+                <button onclick="syncAllFromCloud()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-200 flex items-center space-x-1">
                   <i class="fa-solid fa-rotate-right"></i>
                   <span>Sync Google Sheet</span>
                 </button>
@@ -348,7 +348,7 @@
             <div class="space-y-3">
               <div>
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Google Web App URL Endpoint</label>
-                <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbz9Ota2Biy44YCE4oDorxDHWp_gmNY3PH-cZ9gvqY5CcBbckurqzJc6dL0_fv8gMa3Zug/exec" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-blue-600">
+                <input type="url" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-blue-600">
               </div>
 
               <div class="flex space-x-2">
@@ -374,6 +374,9 @@
   </footer>
 
   <script>
+    // HARDCODED GOOGLE APPS SCRIPT URL ENDPOINT
+    const HARDCODED_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
     const DEFAULT_LOGO_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 300' width='100%' height='100%'><g fill='%23273e82'><path d='M70,72h78c33,0,52,16,52,41c0,17-10,30-26,36c20,5,32,20,32,41c0,27-21,44-56,44H70V72z M108,103v33h36c13,0,21-7,21-17s-8-16-21-16H108z M108,165v38h41c14,0,22-7,22-19s-8-19-22-19H108z'/><path d='M215,152c0-48,34-82,80-82c47,0,78,33,78,80c0,5-1,11-2,15h-118c3,23,20,37,43,37c16,0,29-6,37-16h38c-11,29-41,48-77,48C248,234,215,200,215,152z M334,136c-1-20-16-33-39-33c-21,0-36,13-40,33H334z'/><path d='M391,72h36v24c8-16,25-26,45-26c6,0,12,1,16,3v37c-6-2-12-3-19-3c-25,0-42,16-42,42v85h-36V72z'/><path d='M486,183c11,12,28,19,45,19c15,0,24-6,24-15c0-8-7-12-27-16c-31-7-57-16-57-46c0-32,27-55,64-55c26,0,48,9,63,24l-20,24c-11-10-26-15-42-15c-14,0-23,6-23,14c0,8,8,12,27,16c33,7,58,16,58,46c0,33-26,56-66,56c-28,0-53-10-70-27L486,183z'/><path d='M624,72h36v162h-36V72z M642,20c13,0,23,10,23,23c0,13-10,23-23,23s-23-10-23-23C619,30,629,20,642,20z'/><path d='M218,245h10v20h-10z M240,245h12c7,0,12,4,12,10s-5,10-12,10h-12V245z M250,250v10h2c3,0,5-2,5-5s-2-5-5-5H250z M270,245c7,0,12,5,12,10s-5,10-12,10s-12-5-12-10S263,245,270,245z M270,250c-3,0-5,2-5,5s2,5,5,5s5-2,5-5S273,250,270,250z M290,245h10v15h12v5h-22V245z M320,245h10v15c0,4-3,6-7,6s-7-2-7-6V245z M345,245h20v5h-7v15h-6v-15h-7V245z M375,245h10v20h-10z M395,245c7,0,12,5,12,10s-5,10-12,10s-12-5-12-10S388,245,395,245z M395,250c-3,0-5,2-5,5s2,5,5,5s5-2,5-5S398,250,395,250z M415,245h9l10,13v-13h9v20h-9l-10-13v13h-9V245z M445,260c2,2,5,3,8,3c3,0,5-1,5-3s-2-3-6-4c-6-1-11-3-11-8c0-5,5-8,12-8c4,0,8,1,10,3l-3,4c-2-1-4-2-7-2c-3,0-5,1-5,3s2,2,6,3c6,1,11,3,11,8c0,6-5,9-12,9c-5,0-9-1-12-4L445,260z'/></g></svg>";
 
     const DEFAULT_TIERS = [
@@ -384,7 +387,7 @@
 
     let tiers = JSON.parse(localStorage.getItem('evoucher_tiers')) || DEFAULT_TIERS;
     let claims = JSON.parse(localStorage.getItem('evoucher_claims')) || [];
-    let googleUrl = localStorage.getItem('evoucher_gscript_url') || '';
+    let googleUrl = localStorage.getItem('evoucher_gscript_url') || HARDCODED_SCRIPT_URL;
     let driveFolderId = localStorage.getItem('evoucher_drive_folder_id') || '';
     let appLogo = localStorage.getItem('evoucher_app_logo') || DEFAULT_LOGO_SVG;
 
@@ -404,9 +407,64 @@
       document.getElementById('mainHeaderSub').innerText = headerSub;
     }
 
+    async function syncAllFromCloud() {
+      if (!googleUrl || googleUrl.includes("PASTE_YOUR")) return;
+      try {
+        const response = await fetch(googleUrl);
+        const resData = await response.json();
+        
+        if (resData.status === 'success') {
+          if (resData.data) {
+            claims = resData.data;
+            localStorage.setItem('evoucher_claims', JSON.stringify(claims));
+          }
+          if (resData.settings) {
+            const s = resData.settings;
+            if (s.tiers) { tiers = s.tiers; localStorage.setItem('evoucher_tiers', JSON.stringify(tiers)); }
+            if (s.appLogo) { appLogo = s.appLogo; localStorage.setItem('evoucher_app_logo', appLogo); }
+            if (s.codePrefix) { codePrefix = s.codePrefix; localStorage.setItem('evoucher_code_prefix', codePrefix); }
+            if (s.headerTitle) { headerTitle = s.headerTitle; localStorage.setItem('evoucher_header_title', headerTitle); }
+            if (s.headerSub) { headerSub = s.headerSub; localStorage.setItem('evoucher_header_sub', headerSub); }
+            if (s.driveFolderId) { driveFolderId = s.driveFolderId; localStorage.setItem('evoucher_drive_folder_id', driveFolderId); }
+            
+            updateLogos();
+            updateHeaderUI();
+          }
+        }
+      } catch (err) {
+        console.log('Failed to sync from cloud:', err);
+      }
+    }
+
+    async function pushSettingsToCloud() {
+      if (!googleUrl || googleUrl.includes("PASTE_YOUR")) return;
+      const payload = {
+        action: "saveSettings",
+        settings: {
+          tiers,
+          appLogo,
+          codePrefix,
+          headerTitle,
+          headerSub,
+          driveFolderId
+        }
+      };
+
+      try {
+        await fetch(googleUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.log('Failed to push settings to cloud:', err);
+      }
+    }
+
     window.onload = function() {
       updateLogos();
       updateHeaderUI();
+      syncAllFromCloud();
     };
 
     function formatICInput(input) {
@@ -490,7 +548,8 @@
       localStorage.setItem('evoucher_header_sub', headerSub);
 
       updateHeaderUI();
-      alert('Prefix and main title settings saved successfully!');
+      pushSettingsToCloud();
+      alert('Prefix and main title settings saved & synced to all devices!');
     }
 
     async function handleClaim(e) {
@@ -552,6 +611,7 @@
       }
 
       const claimRecord = {
+        action: "addClaim",
         code,
         name,
         email,
@@ -570,15 +630,15 @@
       claims.push(claimRecord);
       localStorage.setItem('evoucher_claims', JSON.stringify(claims));
 
-      if (googleUrl) {
+      if (googleUrl && !googleUrl.includes("PASTE_YOUR")) {
         fetch(googleUrl, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify(claimRecord)
         }).catch(err => console.log('Sync error:', err));
       }
 
+      pushSettingsToCloud();
       document.getElementById('claimForm').reset();
     }
 
@@ -672,34 +732,14 @@
             <div class="h-28 w-full rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative group">
               <img id="tierImgPrev_${t.id}" src="${t.img}" class="w-full h-full object-cover">
             </div>
-            
-            <div>
-              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Upload New Image File</label>
-              <input type="file" accept="image/*" onchange="handleTierImageUpload(event, ${t.id})" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-brand cursor-pointer border border-slate-200 rounded-lg p-0.5">
-            </div>
 
             <div>
-              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Or Input Image URL</label>
-              <input type="url" value="${t.img.startsWith('data:') ? '' : t.img}" id="tierImgUrl_${t.id}" onchange="previewTierUrl(${t.id})" placeholder="https://example.com/voucher.jpg" class="w-full p-1.5 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-blue-600">
+              <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Input Public Image URL (e.g. Imgur, Drive)</label>
+              <input type="url" value="${t.img}" id="tierImgUrl_${t.id}" onchange="previewTierUrl(${t.id})" placeholder="https://example.com/voucher.jpg" class="w-full p-1.5 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-blue-600">
             </div>
           </div>
         </div>
       `).join('');
-    }
-
-    function handleTierImageUpload(e, id) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const base64Data = evt.target.result;
-          document.getElementById(`tierImgPrev_${id}`).src = base64Data;
-          document.getElementById(`tierImgUrl_${id}`).value = '';
-          const tierObj = tiers.find(t => t.id === id);
-          if (tierObj) tierObj.tempImg = base64Data;
-        };
-        reader.readAsDataURL(file);
-      }
     }
 
     function previewTierUrl(id) {
@@ -716,16 +756,12 @@
         t.name = document.getElementById(`tierName_${t.id}`).value;
         t.value = document.getElementById(`tierValue_${t.id}`).value;
         t.stock = parseInt(document.getElementById(`tierStock_${t.id}`).value) || 0;
-        if (t.tempImg) {
-          t.img = t.tempImg;
-          delete t.tempImg;
-        } else {
-          const urlVal = document.getElementById(`tierImgUrl_${t.id}`).value.trim();
-          if (urlVal) t.img = urlVal;
-        }
+        const urlVal = document.getElementById(`tierImgUrl_${t.id}`).value.trim();
+        if (urlVal) t.img = urlVal;
       });
       localStorage.setItem('evoucher_tiers', JSON.stringify(tiers));
-      alert('Stock and voucher images saved successfully!');
+      pushSettingsToCloud();
+      alert('Stock and voucher images saved & synced to all devices!');
     }
 
     let tempLogoBase64 = null;
@@ -757,8 +793,9 @@
 
       localStorage.setItem('evoucher_app_logo', appLogo);
       updateLogos();
+      pushSettingsToCloud();
       tempLogoBase64 = null;
-      alert('Application logo updated successfully!');
+      alert('Application logo updated & synced successfully!');
     }
 
     function resetDefaultLogo() {
@@ -766,6 +803,7 @@
         appLogo = DEFAULT_LOGO_SVG;
         localStorage.removeItem('evoucher_app_logo');
         updateLogos();
+        pushSettingsToCloud();
         document.getElementById('logoFileInput').value = '';
         document.getElementById('logoUrlInput').value = '';
         alert('Logo has been reset to default!');
@@ -775,27 +813,15 @@
     function saveDriveConfig() {
       driveFolderId = document.getElementById('driveFolderId').value.trim();
       localStorage.setItem('evoucher_drive_folder_id', driveFolderId);
-      alert('Google Drive Folder ID saved successfully!');
+      pushSettingsToCloud();
+      alert('Google Drive Folder ID saved & synced successfully!');
     }
 
-    // UPDATED FUNCTION: FETCH LIVE DATA FROM GOOGLE SHEET
     async function renderLogsTable() {
       const tbody = document.getElementById('logsTableBody');
       tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">Fetching live data from Google Sheet...</td></tr>`;
 
-      if (googleUrl) {
-        try {
-          const response = await fetch(googleUrl);
-          const resData = await response.json();
-          
-          if (resData.status === 'success' && resData.data.length > 0) {
-            claims = resData.data;
-            localStorage.setItem('evoucher_claims', JSON.stringify(claims));
-          }
-        } catch (err) {
-          console.log('Failed to fetch data from Google Sheet:', err);
-        }
-      }
+      await syncAllFromCloud();
 
       if (claims.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">No claim records found.</td></tr>`;
@@ -839,8 +865,7 @@
       if (!googleUrl) return alert('Please enter an endpoint URL first.');
       fetch(googleUrl, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ test: true, timestamp: new Date().toISOString() })
       }).then(() => alert('Test Signal Sent! Check your Google Sheet.'))
         .catch(err => alert('Failed to connect: ' + err));
